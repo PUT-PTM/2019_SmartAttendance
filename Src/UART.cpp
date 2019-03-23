@@ -96,5 +96,7 @@ void UART::receiveAll(std::string &rData) {
     std::string result;
     char tempC[1];
     while (this->receive(tempC, 1)) { result.push_back(tempC[0]); }
+    rData.clear();
+    rData.shrink_to_fit();
     rData = result;
 }

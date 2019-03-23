@@ -2,13 +2,11 @@
 // Created by Tomasz Kiljańczyk on 13-Mar-19.
 //
 
-#include <WiFi.hpp>
-
 #include "WiFi.hpp"
 
+#include "HTTP.hpp"
 #include "GPIO_Pin.hpp"
 #include "USB_Serial.hpp"
-#include "HTTP.hpp"
 
 using namespace std;
 
@@ -16,14 +14,15 @@ using namespace std;
 bool WiFi::init(UART_HandleTypeDef &_uart, bool connect) {
     this->uart = UART(&_uart);
 
-    if (!this->restart()) { return false; }
     HAL_Delay(100);
-    if (!this->disableEcho()) { return false; }
     if (!this->test()) { return false; }
+    if (!this->reset()) { return false; }
+    if (!this->disableEcho()) { return false; }
 
     if (connect) {
         if (!this->setMode(CWMODE_STATION)) { return false; }
         if (!this->quit()) { return false; }
+        if (!this->transmitCommand("AT+CWLAPOPT=1,2")) { return false; }
         if (!this->checkNetworks()) { return false; }
         HAL_Delay(100);
 
@@ -41,17 +40,20 @@ bool WiFi::init(UART_HandleTypeDef &_uart, bool connect) {
 
 void WiFi::setConfiguredNetworks(const rapidjson::Document &data) {
     USB_Serial::transmit("WiFi configuring networks\r\n");
+
+    this->configuredNetworks.clear();
+
     for (const auto &elem : data["NETWORKS"].GetArray()) {
         const string ssid = elem["SSID"].GetString();
         const string passwd = elem["PASSWD"].GetString();
         USB_Serial::transmit(ssid + "\r\n");
-        this->configuredNetworks[ssid] = passwd;
+        this->configuredNetworks.emplace(ssid, passwd);
     }
     USB_Serial::transmit("\r\n");
 }
 
 
-bool WiFi::sendCommand(const string &cmd, string *result) {
+bool WiFi::transmitCommand(const string &cmd, string *result) {
     USB_Serial::transmit("WiFi command start -----------------------------\r\n");
     USB_Serial::transmit("Command: " + cmd + "\r\n");
 
@@ -59,7 +61,7 @@ bool WiFi::sendCommand(const string &cmd, string *result) {
 
     string temp;
     while (true) {
-        if (temp.find("busy p") == string::npos) {
+        if (temp.find("busy") == string::npos) {
             if (!uart.transmit(cmd + "\r\n")) {
                 USB_Serial::transmit("WiFi command fail ------------------------------\r\n\r\n");
                 return false;
@@ -89,11 +91,11 @@ bool WiFi::sendCommand(const string &cmd, string *result) {
 }
 
 bool WiFi::transmitCommand(const string &cmd) {
-    return this->sendCommand(cmd, nullptr);
+    return this->transmitCommand(cmd, nullptr);
 }
 
 
-bool WiFi::restart() {
+bool WiFi::reset() {
     USB_Serial::transmit("WiFi restart\r\n");
     return this->transmitCommand("AT+RST");
 }
@@ -118,7 +120,7 @@ bool WiFi::enableEcho() {
     return this->transmitCommand("ATE1");
 }
 
-void WiFi::transmitConnectionStatus(const string &received) {
+void WiFi::connectionStatus(const string &received) {
     if (received.find("STATUS:2") != string::npos) {
         USB_Serial::transmit("Result: Got IP\r\n");
     }
@@ -136,8 +138,8 @@ void WiFi::transmitConnectionStatus(const string &received) {
 bool WiFi::checkConnection() {
     USB_Serial::transmit("WiFi status check\r\n");
     string result;
-    const bool fResult = this->sendCommand("AT+CIPSTATUS", &result);
-    if (fResult) { transmitConnectionStatus(result); }
+    const bool fResult = this->transmitCommand("AT+CIPSTATUS", &result);
+    if (fResult) { connectionStatus(result); }
     return fResult;
 }
 
@@ -154,6 +156,7 @@ bool WiFi::setDHCP(const CWMODE &mode, const bool &state) {
 
 void WiFi::parseFoundNetworks(const string &data) {
     this->detectedNetworks.clear();
+    this->detectedNetworks.shrink_to_fit();
 
     bool ssidParse = false;
     bool changedLine = true;
@@ -165,8 +168,9 @@ void WiFi::parseFoundNetworks(const string &data) {
         }
         else if (ssidParse && c == '\"' && !changedLine) {
             ssidParse = false;
-            detectedNetworks.push_back(ssid);
+            detectedNetworks.emplace_back(ssid);
             ssid.clear();
+            ssid.shrink_to_fit();
         }
         else if (ssidParse) { ssid.push_back(c); }
         else if (!changedLine && c == '\n') { changedLine = true; }
@@ -176,7 +180,7 @@ void WiFi::parseFoundNetworks(const string &data) {
 bool WiFi::checkNetworks() {
     USB_Serial::transmit("WiFi network check\r\n");
     string data;
-    bool fResult = this->sendCommand("AT+CWLAP", &data);
+    bool fResult = this->transmitCommand("AT+CWLAP", &data);
     if (!fResult) { return false; }
     else { parseFoundNetworks(data); }
     return true;
@@ -212,22 +216,38 @@ bool WiFi::quit() {
     return this->transmitCommand("AT+CWQAP");
 }
 
-bool WiFi::transmit(const string &req, const string &dataToSend) {
-    const string request = HTTP::buildRequest(req, dataToSend);
-    this->transmitCommand("AT+CIPSEND=" + to_string(request.length()));
-    this->transmitCommand(request);
-    USB_Serial::transmit("WiFi transmit\r\n");
-    return false;
+bool WiFi::sendHttpRequest(const string &req, const string &dataToSend, string &response) {
+    const string request = HTTP::buildRequest(connectedHost, req, dataToSend);
+    return this->send(request, response);
 }
 
 bool WiFi::connect(const string &type, const string &address, const uint16_t &port) {
     USB_Serial::transmit("WiFi connect\r\n");
     const string cmd = "AT+CIPSTART=\"" + type + "\",\"" + address + "\"," + to_string(port);
-    return this->transmitCommand(cmd);
+    if (!this->transmitCommand(cmd)) { return false; }
+    else {
+        connectedHost = address + ":" + to_string(port);
+        return true;
+    }
 }
 
-bool WiFi::send(const string &data) {
-    if(!this->transmitCommand("AT+CIPSEND=" + to_string(data.length()))) { return false; }
-    if(!this->transmitCommand(HTTP::buildRequest("GET", "/test"))) { return false; }
+bool WiFi::send(const string &data, string &response) {
+    USB_Serial::transmit("WiFi send\r\n");
+    if (!this->transmitCommand("AT+CIPMODE=1")) { return false; }
+    if (!this->uart.transmit("AT+CIPSEND\r\n")) { return false; }
+    HAL_Delay(10);
+    if (!this->uart.transmit(data + "\r\n")) { return false; }
+    this->uart.receiveAll(response);
+    HAL_Delay(20);
+    if (!this->uart.transmit("+++")) { return false; }
+    HAL_Delay(20);
+    if (!this->transmitCommand("AT+CIPMODE=0")) { return false; }
+
+    uint32_t respEnd = response.length()-1;
+    if(response[respEnd] == 'K' && response[respEnd-1] == 'O' && response[respEnd-2] == ' ') {
+        response.resize(respEnd-2);
+        response.shrink_to_fit();
+    }
+
     return false;
 }

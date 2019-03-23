@@ -2,7 +2,7 @@
  * GPIO_Pin.h
  *
  *  Created on: Dec 16, 2018
- *      Author: Tomasz Kilja�czyk
+ *      Author: Tomasz Kiljańczyk
  */
 
 #ifndef GPIO_PIN_HPP_

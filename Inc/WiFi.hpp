@@ -32,10 +32,11 @@ class WiFi final {
 
     std::map<std::string, std::string> configuredNetworks;
     std::vector<std::string> detectedNetworks;
+    std::string connectedHost;
 
-    void transmitConnectionStatus(const std::string &received);
+    void connectionStatus(const std::string &received);
 
-    void parseFoundNetworks(const std::string& data);
+    void parseFoundNetworks(const std::string &data);
 
 public:
     explicit WiFi() = default;
@@ -47,11 +48,11 @@ public:
 
     bool transmitCommand(const std::string &cmd);
 
-    bool sendCommand(const std::string &cmd, std::string *result);
+    bool transmitCommand(const std::string &cmd, std::string *result);
 
     bool restore();
 
-    bool restart();
+    bool reset();
 
     bool disableEcho();
 
@@ -72,14 +73,16 @@ public:
     bool checkVersion();
 
     bool join(const std::string &ssid, const std::string &passwd);
+
     bool join();
 
     bool quit();
 
-    bool transmit(const std::string &req, const std::string &dataToSend);
+    bool sendHttpRequest(const std::string &req, const std::string &dataToSend, std::string &response);
 
-    bool connect(const std::string& type, const std::string& address, const uint16_t& port);
-    bool send(const std::string& data);
+    bool connect(const std::string &type, const std::string &address, const uint16_t &port);
+
+    bool send(const std::string &data, std::string &response);
 
 };
 

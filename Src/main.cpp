@@ -26,6 +26,7 @@
 /* USER CODE BEGIN Includes */
 #include "ff.h"
 #include "rapidjson/document.h"
+
 #include "WiFi.hpp"
 #include "GPIO_Pin.hpp"
 #include "USB_Serial.hpp"
@@ -63,6 +64,7 @@ GPIO_Pin diodeBlue(GPIOD, GPIO_PIN_15);
 GPIO_Pin diodeRed(GPIOD, GPIO_PIN_14);
 GPIO_Pin diodeOrange(GPIOD, GPIO_PIN_13);
 GPIO_Pin diodeGreen(GPIOD, GPIO_PIN_12);
+GPIO_Pin espReset(GPIOD, GPIO_PIN_11);
 
 std::string serverType;
 std::string serverAddress;
@@ -170,24 +172,33 @@ int main() {
     MX_USB_DEVICE_Init();
     MX_SPI3_Init();
     /* USER CODE BEGIN 2 */
-    //USB_Serial::setEnabled(true);
-    diodeOrange.on();
-    HAL_Delay(3000);
-    diodeOrange.off();
+    {
+        diodeOrange.on();
 
-    if (configure()) {
-        diodeBlue.on();
+        espReset.off();
+        HAL_Delay(1500);
+        espReset.on();
+        HAL_Delay(1500);
 
-        //Inicjuje połączenie z ESP-01 i łączy z siecią
-        if (wifi.init(huart3, true)) { diodeGreen.on(); }
-        else { diodeRed.on(); }
+        diodeOrange.off();
 
-        //wifi.checkVersion();    //Wyświetla wersję oprogramowania na ESP
-        diodeBlue.off();
+        if (configure()) {
+            diodeBlue.on();
 
-        wifi.connect(serverType, serverAddress, serverPort);
-        //wifi.transmitCommand("AT+CIPSEND=5");
-        wifi.send(HTTP::buildRequest("GET","/test"));
+            //Inicjuje połączenie z ESP-01 i łączy z siecią
+            if (wifi.init(huart3, true)) { diodeGreen.on(); }
+            else { diodeRed.on(); }
+
+            //wifi.checkVersion();    //Wyświetla wersję oprogramowania na ESP
+            diodeBlue.off();
+
+            wifi.connect(serverType, serverAddress, serverPort);
+            std::string respData;
+            wifi.sendHttpRequest("GET", "/test", respData);
+
+            HTTP::Response resp = HTTP::parseResponse(respData);
+            USB_Serial::transmit(resp.toString() + "\r\n");
+        }
     }
     /* USER CODE END 2 */
 
