@@ -1,0 +1,52 @@
+.Navbar_Container {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    height: 50px;
+    width: 100%;
+
+    background-color: steelblue;
+    box-shadow: 0 0 10px 10px rgba(0, 0, 0, 0.4);
+    cursor: default;
+}
+
+#Title {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    height: 50px;
+    width: 100%;
+    line-height: 50px;
+
+    margin: 0;
+    font-family: gliphicons-halflings-regular, monospace;
+    color: white;
+    text-align: center;
+}
+
+#Account {
+    position: absolute;
+    top: 0;
+    left: 50px;
+
+    height: 50px;
+    line-height: 50px;
+
+    margin: 0;
+    font-family: gliphicons-halflings-regular, monospace;
+    color: white;
+    text-align: left;
+}
+
+#GitHub {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+
+    height: 40px;
+    width: 40px;
+
+    cursor: pointer;
+}

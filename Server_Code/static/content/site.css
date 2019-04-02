@@ -1,0 +1,59 @@
+body {
+    margin: 0;
+}
+
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+.field-validation-error {
+    color: #b94a48;
+}
+
+.field-validation-valid {
+    display: none;
+}
+
+input.input-validation-error {
+    border: 1px solid #b94a48;
+}
+
+input[type="checkbox"].input-validation-error {
+    border: 0 none;
+}
+
+.validation-summary-errors {
+    color: #b94a48;
+}
+
+.validation-summary-valid {
+    display: none;
+}
+
+.Main_Container {
+    position: Absolute;
+    top: 0;
+    left: 0;
+
+    height: 100%;
+    width: 100%;
+    min-height: 640px;
+    min-width: 640px;
+
+    margin: 0;
+}
+
+#PP {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+
+    height: 192px;
+    width: 192px;
+
+    cursor: pointer;
+}

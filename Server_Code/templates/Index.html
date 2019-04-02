@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Attendance</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="../static/scripts/logic.js"></script>
+    <script src="../static/scripts/boot.js"></script>
+    <script src="../static/scripts/listeners.js"></script>
+    <link rel="stylesheet" type="text/css" href="../static/content/site.css">
+    <link rel="stylesheet" type="text/css" href="../static/content/navbar.css">
+    <link rel="stylesheet" type="text/css" href="../static/content/content.css">
+</head>
+
+<body>
+<div class="Main_Container">
+    <div class="Content_Container">
+        <button id="But_Data">Get Data</button>
+        <button id="But_Add">Add</button>
+        <button id="But_Del">Delete</button>
+
+        <label for="Input_SID"></label><input type="number" name="SID" placeholder="Index" id="Input_SID">
+        <label for="Input_fName"></label><input type="text" name="fName" placeholder="First name" id="Input_fName">
+        <label for="Input_lName"></label><input type="text" name="lName" placeholder="Last name" id="Input_lName">
+
+        <table id="Table">
+            <tr>
+                <th>Index</th>
+                <th>Firstname</th>
+                <th>Lastname</th>
+            </tr>
+        </table>
+    </div>
+    <div class="Navbar_Container">
+        <h1 id="Title">Smart Attendance</h1>
+        <h2 id="Account">Repository</h2>
+        <img src="../static/images/GitHub.png" alt="GitHub" id="GitHub">
+    </div>
+    <img src="../static/images/PP.png" alt="PP" id="PP">
+</div>
+</body>
+</html>

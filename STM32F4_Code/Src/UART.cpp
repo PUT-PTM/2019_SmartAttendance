@@ -54,7 +54,7 @@ bool UART::transmit(const char *tData, const uint16_t &size) const {
 }
 
 
-bool UART::transmit(const std::string tData) const {
+bool UART::transmit(const std::string &tData) const {
     if (handle != nullptr) {
         return this->transmit((uint8_t *) tData.c_str(), (uint16_t) tData.size());
     }
@@ -99,4 +99,8 @@ void UART::receiveAll(std::string &rData) {
     rData.clear();
     rData.shrink_to_fit();
     rData = result;
+}
+
+void UART::receiveIt(char* rData, const uint16_t &size) const {
+    HAL_UART_Receive_IT(handle, (uint8_t*)rData, size);
 }
