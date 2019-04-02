@@ -6,20 +6,29 @@ from flask_cors import CORS, cross_origin
 from flask import Flask, render_template
 import pymssql
 import json
-import os.path
+from pathlib import Path
 
 app = Flask(__name__, template_folder='templates')
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
-# Connect to Microsoft SQL server
-conn = pymssql.connect(
-    server='192.168.99.100:1433',
-    user='sa',
-    password='aB123456',
-    database='Attendance'
-)
-cursor = conn.cursor()
+conn = None
+cursor = None
+
+
+def db_init():
+    global conn
+    global cursor
+    content = Path('config.json').read_text()
+    config_json = json.loads(content)
+    # Connect to Microsoft SQL server
+    conn = pymssql.connect(
+        server=config_json['server'],
+        user=config_json['user'],
+        password=config_json['password'],
+        database=config_json['database']
+    )
+    cursor = conn.cursor()
 
 
 @app.route('/')
@@ -104,6 +113,7 @@ def tables_student():
 
 
 if __name__ == '__main__':
+    db_init()
     app.run(
         host='0.0.0.0',
         port=80,

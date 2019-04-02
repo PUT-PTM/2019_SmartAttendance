@@ -1,0 +1,6 @@
+{
+    "server":"192.168.99.100:1433",
+    "user":"sa",
+    "password":"aB123456",
+    "database":"Attendance"
+}
