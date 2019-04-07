@@ -18,4 +18,24 @@ $(document).ready(function () {
         let index = parseInt($('#Input_SID').val());
         db_delete_row(index);
     });
+    $('#But_Pres_Add').on("click", function () {
+        let index = parseInt($('#Input_SID').val());
+        let CID = parseInt($('#Input_CID').val());
+        let room = parseInt($('#Input_Room').val());
+        db_add_presence(index, CID, room);
+    });
+});
+
+//Mouseover event atachment and handling
+$(document).ready(function () {
+    $("button").on("mouseenter", function () {
+        $(this).css({'backgroundColor': "lightsteelblue"});
+    });
+});
+
+//Mouseout event atachment and handling
+$(document).ready(function () {
+    $("button").on("mouseleave", function () {
+        $(this).css({'backgroundColor': "steelblue"});
+    });
 });

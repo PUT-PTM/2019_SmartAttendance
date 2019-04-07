@@ -1,4 +1,6 @@
 # Imports
+import now as now
+from datetime import datetime
 from flask import Flask
 from flask import request
 from flask import Response
@@ -52,13 +54,9 @@ def student_exists(sid):
         return Response(status=400)
 
     # Correct request
-    cursor.execute('select COUNT(1) from StudentInfo where StudentID=' + str(sid) + ';')
+    cursor.execute('select COUNT(1) from StudentInfo where SID=' + str(sid) + ';')
     result = cursor.fetchone()
-
-    if str(result[0]) == '1':
-        return Response(status=409)
-    else:
-        return Response(status=200)
+    return str(result[0]) == '1'
 
 
 @app.route('/tables/StudentInfo/<int:sid>', methods=['GET', 'DELETE'])
@@ -67,7 +65,7 @@ def tables_student_exists_delete(sid):
         return student_exists(sid)
     # end if GET
     if request.method == 'DELETE':
-        cursor.execute('delete from StudentInfo where StudentID=' + str(sid) + ';')
+        cursor.execute('delete from StudentInfo where SID=' + str(sid) + ';')
         conn.commit()
         return Response(status=200)
     # end if DELETE
@@ -76,7 +74,7 @@ def tables_student_exists_delete(sid):
 @app.route('/tables/StudentInfo/', methods=['GET', 'POST'])
 def tables_student():
     if request.method == 'GET':
-        cursor.execute('select * from StudentInfo order by StudentID asc;')
+        cursor.execute('select * from StudentInfo order by SID asc;')
 
         resp = Response(status=200)
 
@@ -100,12 +98,69 @@ def tables_student():
     # end if GET
     elif request.method == 'POST':
         payload = json.loads(request.data)
-        if student_exists(str(payload['SID'])).status_code != 200:
+        if student_exists(str(payload['SID'])):
             return Response(status=409)
-        sqlReq = 'insert into StudentInfo values (' + str(payload['SID']) + ',\'' + payload['fName'] + '\',\'' + \
-                 payload['lName'] + '\');'
-        print(sqlReq)
-        cursor.execute(sqlReq)
+
+        sid = str(payload['SID'])
+        f_name = '\'' + payload['fName'] + '\''
+        l_name = '\'' + payload['lName'] + '\''
+
+        sql_req = 'insert into StudentInfo values (' + sid + ',' + f_name + ',' + l_name + ');'
+        print(sql_req)
+        cursor.execute(sql_req)
+        conn.commit()
+        print('Finished sql req!')
+        return Response(status=200)
+    # end elif POST
+
+
+@app.route('/tables/Presence/', methods=['GET', 'POST'])
+def tables_presence():
+    if request.method == 'GET':
+        cursor.execute('select * from Presence order by [Date] asc;')
+
+        resp = Response(status=200)
+
+        # Convert table into json
+        payload = json.loads('{"elements":[]}')
+        row = cursor.fetchone()
+        while row:
+            payload['elements'].append(
+                json.loads(
+                    '{' +
+                    '"SID":' + str(row[0]) + ',' +
+                    '"Date": "' + row[1] + '",' +
+                    '"CID": "' + row[2] + '"' +
+                    '"Room": "' + row[3] + '"' +
+                    '}'
+                )
+            )
+            row = cursor.fetchone()
+        # While end
+        resp.data = json.dumps(payload)
+        return resp
+    # end if GET
+    elif request.method == 'POST':
+        payload = json.loads(request.data)
+        if not student_exists(str(payload['SID'])):
+            return False
+
+        sid = str(payload.get('SID'))
+        date = '\'' + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + '\''
+        cid = payload.get('CID')
+        room = '\'' + payload.get('Room') + '\''
+
+        # Request building
+        sql_req = 'insert into Presence values (' + sid + ',' + date
+        if cid is not None:
+            sql_req += ',' + str(cid)
+        if len(room) > 2:
+            sql_req += ',' + room
+        sql_req += ');'
+
+        print(sql_req)
+
+        cursor.execute(sql_req)
         conn.commit()
         print('Finished sql req!')
         return Response(status=200)

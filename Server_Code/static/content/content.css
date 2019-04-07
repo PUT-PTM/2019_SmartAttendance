@@ -6,49 +6,84 @@
     font-family: gliphicons-halflings-regular, monospace;
 }
 
-#But_Data {
+.Buttons {
     position: absolute;
     top: 20px;
     left: 10px;
+}
 
-    width: 150px;
+button {
+    padding: 0;
+    border: none;
+    color: white;
+    background-color: steelblue;
+    transition: background-color ease-in 300ms;
+}
+
+#But_Data {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    width: 250px;
 
     font-size: 30px;
 }
 
 #But_Add {
     position: absolute;
-    top: 70px;
-    left: 10px;
+    top: 50px;
+    left: 0;
 
-    width: 100px;
+    width: 250px;
 
     font-size: 30px;
 }
 
 #But_Del {
     position: absolute;
-    top: 120px;
-    left: 10px;
+    top: 100px;
+    left: 0;
 
-    width: 100px;
+    width: 250px;
 
     font-size: 30px;
 }
 
-#test {
+#But_Pres_Add {
     position: absolute;
-    top: 120px;
-    left: 200px;
+    top: 150px;
+    left: 0;
+
+    width: 250px;
+
+    font-size: 30px;
 }
 
-#Table {
+.Tables {
     position: absolute;
     top: 20px;
-    left: 200px;
+    left: 300px;
+}
+
+#Table_Students {
+    position: absolute;
+    top: 0;
+    left: 0;
     background-color: steelblue;
     border-radius: 10px;
 
+    max-width: 290px;
+}
+
+#Table_Presence {
+    position: absolute;
+    top: 0;
+    left: 300px;
+    background-color: steelblue;
+    border-radius: 10px;
+
+    max-width: 290px;
 }
 
 th {
@@ -60,20 +95,60 @@ td {
     color: white;
 }
 
+.Inputs {
+    position: absolute;
+    top: 300px;
+    left: 10px;
+
+    height: 190px;
+    width: 175px;
+
+    padding: 0;
+    margin:0;
+
+    background-color: steelblue;
+}
+
+#Inputs_Title {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+
+    text-align: center;
+    font-size: 30px;
+    margin-top: 0;
+
+    color: white;
+}
+
 #Input_SID {
     position: absolute;
-    top: 180px;
+    top: 40px;
     left: 10px;
 }
 
 #Input_fName {
     position: absolute;
-    top: 210px;
+    top: 70px;
     left: 10px;
 }
 
 #Input_lName {
     position: absolute;
-    top: 240px;
+    top: 100px;
+    left: 10px;
+}
+
+#Input_CID {
+    position: absolute;
+    top: 130px;
+    left: 10px;
+}
+
+#Input_Room {
+    position: absolute;
+    top: 160px;
     left: 10px;
 }
