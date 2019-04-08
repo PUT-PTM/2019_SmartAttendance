@@ -17,6 +17,18 @@ string HTTP::buildRequest(const string &host, const string &req, const string &u
     return request;
 }
 
+std::string HTTP::buildRequest(const std::string &host, const std::string &req, const std::string &url,
+                               const std::string &payload) {
+    string request = HTTP::buildRequest(host, req, url);
+    const string length = "Content-Length: " + to_string(payload.length()) + "\r\n";
+    const string type = "Content-Type: application/json\r\n";
+
+    request.append(length);
+    request.append(type);
+    request.append(payload + "\r\n");
+    return request;
+}
+
 string HTTP::Response::toString() {
     string result;
     result += "   Status code : " + to_string(this->statusCode) + "\r\n";
@@ -35,14 +47,12 @@ HTTP::Response HTTP::parseResponse(const string &data) {
     for (const auto &c : data) {
         if (!statusCode && c == ' ') {
             statusCode = true;
-        }
-        else if (statusCode && c == ' ') {
+        } else if (statusCode && c == ' ') {
             resp.statusCode = (uint16_t) stoi(temp);
             temp.clear();
             temp.shrink_to_fit();
             break;
-        }
-        else if (statusCode) { temp.push_back(c); }
+        } else if (statusCode) { temp.push_back(c); }
     }
 
     uint32_t foundPos = data.find("Content-Type: ");
@@ -54,8 +64,7 @@ HTTP::Response HTTP::parseResponse(const string &data) {
                 temp.clear();
                 temp.shrink_to_fit();
                 break;
-            }
-            else {
+            } else {
                 temp.push_back(data[foundPos]);
             }
         } while (foundPos++);
@@ -70,8 +79,7 @@ HTTP::Response HTTP::parseResponse(const string &data) {
                 temp.clear();
                 temp.shrink_to_fit();
                 break;
-            }
-            else {
+            } else {
                 temp.push_back(data[foundPos]);
             }
         } while (foundPos++);
@@ -90,5 +98,3 @@ HTTP::Response HTTP::parseResponse(const string &data) {
 
     return resp;
 }
-
-

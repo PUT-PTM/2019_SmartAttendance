@@ -216,8 +216,13 @@ bool WiFi::quit() {
     return this->transmitCommand("AT+CWQAP");
 }
 
-bool WiFi::sendHttpRequest(const string &req, const string &dataToSend, string &response) {
-    const string request = HTTP::buildRequest(connectedHost, req, dataToSend);
+bool WiFi::sendHttpRequest(const string &req, const string& url, const string &dataToSend, string &response) {
+    const string request = HTTP::buildRequest(connectedHost, req, url, dataToSend);
+    return this->send(request, response);
+}
+
+bool WiFi::sendHttpRequest(const string &req, const string& url, string &response) {
+    const string request = HTTP::buildRequest(connectedHost, req, url);
     return this->send(request, response);
 }
 

@@ -19,6 +19,7 @@
 /* USER CODE END Header */
 
 /* Includes ------------------------------------------------------------------*/
+#include <SmartAttendance.hpp>
 #include "main.h"
 #include "usb_device.h"
 
@@ -54,21 +55,7 @@ SPI_HandleTypeDef hspi3;
 UART_HandleTypeDef huart3;
 
 /* USER CODE BEGIN PV */
-static FATFS FatFs;
-FIL configFile;
-FRESULT fresult;
 
-WiFi wifi;
-
-GPIO_Pin diodeBlue(GPIOD, GPIO_PIN_15);
-GPIO_Pin diodeRed(GPIOD, GPIO_PIN_14);
-GPIO_Pin diodeOrange(GPIOD, GPIO_PIN_13);
-GPIO_Pin diodeGreen(GPIOD, GPIO_PIN_12);
-GPIO_Pin espReset(GPIOD, GPIO_PIN_11);
-
-std::string serverType;
-std::string serverAddress;
-uint16_t serverPort = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -81,59 +68,6 @@ static void MX_USART3_UART_Init();
 static void MX_SPI3_Init();
 
 /* USER CODE BEGIN PFP */
-
-void clearArray(char *cString, const uint16_t &size) {
-    for (uint16_t i = 0; i < size; i++) {
-        cString[i] = '\0';
-    }
-}
-
-bool configure() {
-    //Montowanie partycji
-    diodeRed.on();
-    fresult = f_mount(&FatFs, "", 0);
-    if (fresult != FR_OK) { return false; }
-    diodeRed.off();
-
-    UINT bytesRead;
-    char buffer[256];
-    std::string result;
-
-    //Otwieranie pliku
-    diodeOrange.on();
-    fresult = f_open(&configFile, "CONFIG.INI", FA_OPEN_EXISTING | FA_READ);
-    if (fresult != FR_OK) { return false; }
-    diodeOrange.off();
-
-    //Odczytywanie pliku
-    do {
-        clearArray(buffer, 256);
-        f_read(&configFile, buffer, 256, &bytesRead);
-        result.append(std::string(buffer));
-    } while (bytesRead >= 256);
-    f_close(&configFile);
-
-    //Parsowanie danych
-    diodeRed.on();
-    rapidjson::Document configuration;
-    configuration.Parse(result.c_str());
-    diodeRed.off();
-
-    //Ustawienie łącza szeregowego
-    diodeBlue.on();
-    USB_Serial::setEnabled(configuration["USB_SERIAL"].GetBool());
-    diodeBlue.off();
-
-    //Wgranie konfiguracji sieci
-    diodeGreen.on();
-    wifi.setConfiguredNetworks(configuration);
-    serverType = configuration["SERVER"]["TYPE"].GetString();
-    serverAddress = configuration["SERVER"]["ADDRESS"].GetString();
-    serverPort = (uint16_t) configuration["SERVER"]["PORT"].GetInt();
-    diodeGreen.off();
-
-    return true;
-}
 
 /* USER CODE END PFP */
 
@@ -172,34 +106,7 @@ int main() {
     MX_USB_DEVICE_Init();
     MX_SPI3_Init();
     /* USER CODE BEGIN 2 */
-    {
-        diodeOrange.on();
-
-        espReset.off();
-        HAL_Delay(1500);
-        espReset.on();
-        HAL_Delay(1500);
-
-        diodeOrange.off();
-
-        if (configure()) {
-            diodeBlue.on();
-
-            //Inicjuje połączenie z ESP-01 i łączy z siecią
-            if (wifi.init(huart3, true)) { diodeGreen.on(); }
-            else { diodeRed.on(); }
-
-            //wifi.checkVersion();    //Wyświetla wersję oprogramowania na ESP
-            diodeBlue.off();
-
-            wifi.connect(serverType, serverAddress, serverPort);
-            std::string respData;
-            wifi.sendHttpRequest("GET", "/test", respData);
-
-            HTTP::Response resp = HTTP::parseResponse(respData);
-            USB_Serial::transmit(resp.toString() + "\r\n");
-        }
-    }
+    auto SA = SmartAttendance(huart3, true, GPIOD, GPIO_PIN_11);
     /* USER CODE END 2 */
 
     /* Infinite loop */

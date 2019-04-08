@@ -78,7 +78,8 @@ public:
 
     bool quit();
 
-    bool sendHttpRequest(const std::string &req, const std::string &dataToSend, std::string &response);
+    bool sendHttpRequest(const std::string &req, const std::string &url, std::string &response);
+    bool sendHttpRequest(const std::string &req, const std::string &url, const std::string &dataToSend, std::string &response);
 
     bool connect(const std::string &type, const std::string &address, const uint16_t &port);
 

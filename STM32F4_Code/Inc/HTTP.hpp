@@ -10,6 +10,7 @@
 namespace HTTP {
 
     std::string buildRequest(const std::string &host, const std::string &req, const std::string &url);
+    std::string buildRequest(const std::string &host, const std::string &req, const std::string &url, const std::string& payload);
 
     struct Response {
         Response() = default;
