@@ -6,7 +6,7 @@ function db_get_content() {
         if ($('#Table_Students').length) {
             $('#Table_Students').remove();
         }
-        $('.Content_Container').append(
+        $('.Tables').append(
             `<table id="Table_Students">
                 <tr>
                 <th>Index</th>

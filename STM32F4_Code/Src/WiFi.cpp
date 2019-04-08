@@ -217,7 +217,9 @@ bool WiFi::quit() {
 }
 
 bool WiFi::sendHttpRequest(const string &req, const string& url, const string &dataToSend, string &response) {
+    USB_Serial::transmit(dataToSend+"\r\n");
     const string request = HTTP::buildRequest(connectedHost, req, url, dataToSend);
+    USB_Serial::transmit(request);
     return this->send(request, response);
 }
 

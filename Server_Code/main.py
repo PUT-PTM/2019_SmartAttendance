@@ -1,5 +1,4 @@
 # Imports
-import now as now
 from datetime import datetime
 from flask import Flask
 from flask import request
@@ -142,7 +141,7 @@ def tables_presence():
     # end if GET
     elif request.method == 'POST':
         payload = json.loads(request.data)
-        if not student_exists(str(payload['SID'])):
+        if not student_exists(payload['SID']):
             return False
 
         sid = str(payload.get('SID'))

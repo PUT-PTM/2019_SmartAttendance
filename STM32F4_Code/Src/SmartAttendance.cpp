@@ -17,9 +17,8 @@ SmartAttendance::SmartAttendance(UART_HandleTypeDef &_uart, bool connect, GPIO_T
     diodeOrange(GPIOD, GPIO_PIN_13),
     diodeGreen(GPIOD, GPIO_PIN_12),
     espReset(RST_Port, RST_Pin) {
-    //Function start
-    diodeOrange.on();
 
+    diodeOrange.on();
     espReset.off();
     HAL_Delay(1500);
     espReset.on();
@@ -56,7 +55,7 @@ void SmartAttendance::clearArray(char *cString, const uint16_t &size) {
 
 void SmartAttendance::addPresenceEntry(const int &SID) {
     string respData;
-    const string dataToSend = "{\"SID\":" + to_string(SID) + ",\"CID\":" + to_string(CID) + ",\"Room\":" + room + "}";
+    const string dataToSend = "{\"SID\":" + to_string(SID) + ",\"CID\":" + to_string(CID) + ",\"Room\":\"" + room + "\"}";
 
     wifi.sendHttpRequest("POST", "/tables/Presence/", dataToSend, respData);
 
