@@ -11,6 +11,7 @@
 using namespace std;
 
 
+// uncategorized methods section
 bool WiFi::init(UART_HandleTypeDef &_uart, bool connect) {
     this->uart = UART(&_uart);
 
@@ -37,7 +38,6 @@ bool WiFi::init(UART_HandleTypeDef &_uart, bool connect) {
     return true;
 }
 
-
 void WiFi::setConfiguredNetworks(const rapidjson::Document &data) {
     USB_Serial::transmit("WiFi configuring networks\r\n");
 
@@ -52,7 +52,145 @@ void WiFi::setConfiguredNetworks(const rapidjson::Document &data) {
     USB_Serial::transmit("\r\n");
 }
 
+void WiFi::connectionStatus(const string &received) {
+    if (received.find("STATUS:2") != string::npos) {
+        USB_Serial::transmit("Result: Got IP\r\n");
+    }
+    else if (received.find("STATUS:3") != string::npos) {
+        USB_Serial::transmit("Result: Connected\r\n");
+    }
+    else if (received.find("STATUS:4") != string::npos) {
+        USB_Serial::transmit("Result: Disconnected\r\n");
+    }
+    else if (received.find("STATUS:5") != string::npos) {
+        USB_Serial::transmit("Result: Connection fail\r\n");
+    }
+}
 
+bool WiFi::join() {
+    for (const string &str : this->detectedNetworks) {
+        const auto it = configuredNetworks.find(str);
+        if (it != configuredNetworks.end()) {
+            if (this->join(it->first, it->second)) { return true; }
+        }
+    }
+    return false;
+}
+
+void WiFi::parseFoundNetworks(const string &data) {
+    this->detectedNetworks.clear();
+    this->detectedNetworks.shrink_to_fit();
+
+    bool ssidParse = false;
+    bool changedLine = true;
+    string ssid;
+    for (const auto &c : data) {
+        if (!ssidParse && c == '\"' && changedLine) {
+            ssidParse = true;
+            changedLine = false;
+        }
+        else if (ssidParse && c == '\"' && !changedLine) {
+            ssidParse = false;
+            detectedNetworks.emplace_back(ssid);
+            ssid.clear();
+            ssid.shrink_to_fit();
+        }
+        else if (ssidParse) { ssid.push_back(c); }
+        else if (!changedLine && c == '\n') { changedLine = true; }
+    }
+}
+// end uncategorized methods section
+
+
+
+// AT command section
+bool WiFi::reset() {
+    USB_Serial::transmit("WiFi restart\r\n");
+    return this->transmitCommand("AT+RST");
+}
+
+bool WiFi::restore() {
+    USB_Serial::transmit("WiFi restore\r\n");
+    return this->transmitCommand("AT+RESTORE");
+}
+
+bool WiFi::test() {
+    USB_Serial::transmit("WiFi test\r\n");
+    return this->transmitCommand("AT");
+}
+
+bool WiFi::disableEcho() {
+    USB_Serial::transmit("WiFi echo disable\r\n");
+    return this->transmitCommand("ATE0");
+}
+
+bool WiFi::enableEcho() {
+    USB_Serial::transmit("WiFi echo enable\r\n");
+    return this->transmitCommand("ATE1");
+}
+
+bool WiFi::checkConnection() {
+    USB_Serial::transmit("WiFi status check\r\n");
+    string result;
+    const bool fResult = this->transmitCommand("AT+CIPSTATUS", &result);
+    if (fResult) { connectionStatus(result); }
+    return fResult;
+}
+
+bool WiFi::setMode(const CWMODE &mode) {
+    USB_Serial::transmit("WiFi mode set\r\n");
+    return this->transmitCommand("AT+CWMODE=" + to_string(mode));
+}
+
+bool WiFi::setDHCP(const CWMODE &mode, const bool &state) {
+    USB_Serial::transmit("WiFi DHCP set\r\n");
+    const bool _state = !state;
+    return this->transmitCommand("AT+CWDHCP=" + to_string(mode) + "," + to_string((int) _state));
+}
+
+bool WiFi::checkNetworks() {
+    USB_Serial::transmit("WiFi network check\r\n");
+    string data;
+    bool fResult = this->transmitCommand("AT+CWLAP", &data);
+    if (!fResult) { return false; }
+    else { parseFoundNetworks(data); }
+    return true;
+}
+
+bool WiFi::checkIP() {
+    USB_Serial::transmit("WiFi ip check\r\n");
+    return this->transmitCommand("AT+CIPSTA?");
+}
+
+bool WiFi::checkVersion() {
+    USB_Serial::transmit("WiFi version check\r\n");
+    return this->transmitCommand("AT+GMR");
+}
+
+bool WiFi::join(const string &ssid, const string &passwd) {
+    USB_Serial::transmit("WiFi join\r\n");
+    return this->transmitCommand("AT+CWJAP=\"" + ssid + "\",\"" + passwd + "\"");
+}
+
+bool WiFi::quit() {
+    USB_Serial::transmit("WiFi quit\r\n");
+    return this->transmitCommand("AT+CWQAP");
+}
+
+bool WiFi::connect(const string &type, const string &address, const uint16_t &port) {
+    USB_Serial::transmit("WiFi connect\r\n");
+    const string cmd = "AT+CIPSTART=\"" + type + "\",\"" + address + "\"," + to_string(port);
+    if (!this->transmitCommand(cmd)) { return false; }
+    else {
+        connectedHost = address + ":" + to_string(port);
+        return true;
+    }
+}
+
+
+
+
+// transmision section
 bool WiFi::transmitCommand(const string &cmd, string *result) {
     USB_Serial::transmit("WiFi command start -----------------------------\r\n");
     USB_Serial::transmit("Command: " + cmd + "\r\n");
@@ -94,128 +232,6 @@ bool WiFi::transmitCommand(const string &cmd) {
     return this->transmitCommand(cmd, nullptr);
 }
 
-
-bool WiFi::reset() {
-    USB_Serial::transmit("WiFi restart\r\n");
-    return this->transmitCommand("AT+RST");
-}
-
-bool WiFi::restore() {
-    USB_Serial::transmit("WiFi restore\r\n");
-    return this->transmitCommand("AT+RESTORE");
-}
-
-bool WiFi::test() {
-    USB_Serial::transmit("WiFi test\r\n");
-    return this->transmitCommand("AT");
-}
-
-bool WiFi::disableEcho() {
-    USB_Serial::transmit("WiFi echo disable\r\n");
-    return this->transmitCommand("ATE0");
-}
-
-bool WiFi::enableEcho() {
-    USB_Serial::transmit("WiFi echo enable\r\n");
-    return this->transmitCommand("ATE1");
-}
-
-void WiFi::connectionStatus(const string &received) {
-    if (received.find("STATUS:2") != string::npos) {
-        USB_Serial::transmit("Result: Got IP\r\n");
-    }
-    else if (received.find("STATUS:3") != string::npos) {
-        USB_Serial::transmit("Result: Connected\r\n");
-    }
-    else if (received.find("STATUS:4") != string::npos) {
-        USB_Serial::transmit("Result: Disconnected\r\n");
-    }
-    else if (received.find("STATUS:5") != string::npos) {
-        USB_Serial::transmit("Result: Connection fail\r\n");
-    }
-}
-
-bool WiFi::checkConnection() {
-    USB_Serial::transmit("WiFi status check\r\n");
-    string result;
-    const bool fResult = this->transmitCommand("AT+CIPSTATUS", &result);
-    if (fResult) { connectionStatus(result); }
-    return fResult;
-}
-
-bool WiFi::setMode(const CWMODE &mode) {
-    USB_Serial::transmit("WiFi mode set\r\n");
-    return this->transmitCommand("AT+CWMODE=" + to_string(mode));
-}
-
-bool WiFi::setDHCP(const CWMODE &mode, const bool &state) {
-    USB_Serial::transmit("WiFi DHCP set\r\n");
-    const bool _state = !state;
-    return this->transmitCommand("AT+CWDHCP=" + to_string(mode) + "," + to_string((int) _state));
-}
-
-void WiFi::parseFoundNetworks(const string &data) {
-    this->detectedNetworks.clear();
-    this->detectedNetworks.shrink_to_fit();
-
-    bool ssidParse = false;
-    bool changedLine = true;
-    string ssid;
-    for (const auto &c : data) {
-        if (!ssidParse && c == '\"' && changedLine) {
-            ssidParse = true;
-            changedLine = false;
-        }
-        else if (ssidParse && c == '\"' && !changedLine) {
-            ssidParse = false;
-            detectedNetworks.emplace_back(ssid);
-            ssid.clear();
-            ssid.shrink_to_fit();
-        }
-        else if (ssidParse) { ssid.push_back(c); }
-        else if (!changedLine && c == '\n') { changedLine = true; }
-    }
-}
-
-bool WiFi::checkNetworks() {
-    USB_Serial::transmit("WiFi network check\r\n");
-    string data;
-    bool fResult = this->transmitCommand("AT+CWLAP", &data);
-    if (!fResult) { return false; }
-    else { parseFoundNetworks(data); }
-    return true;
-}
-
-bool WiFi::checkIP() {
-    USB_Serial::transmit("WiFi ip check\r\n");
-    return this->transmitCommand("AT+CIPSTA?");
-}
-
-bool WiFi::checkVersion() {
-    USB_Serial::transmit("WiFi version check\r\n");
-    return this->transmitCommand("AT+GMR");
-}
-
-bool WiFi::join(const string &ssid, const string &passwd) {
-    USB_Serial::transmit("WiFi join\r\n");
-    return this->transmitCommand("AT+CWJAP=\"" + ssid + "\",\"" + passwd + "\"");
-}
-
-bool WiFi::join() {
-    for (const string &str : this->detectedNetworks) {
-        const auto it = configuredNetworks.find(str);
-        if (it != configuredNetworks.end()) {
-            if (this->join(it->first, it->second)) { return true; }
-        }
-    }
-    return false;
-}
-
-bool WiFi::quit() {
-    USB_Serial::transmit("WiFi quit\r\n");
-    return this->transmitCommand("AT+CWQAP");
-}
-
 bool WiFi::sendHttpRequest(const string &req, const string& url, const string &dataToSend, string &response) {
     USB_Serial::transmit(dataToSend+"\r\n");
     const string request = HTTP::buildRequest(connectedHost, req, url, dataToSend);
@@ -226,16 +242,6 @@ bool WiFi::sendHttpRequest(const string &req, const string& url, const string &d
 bool WiFi::sendHttpRequest(const string &req, const string& url, string &response) {
     const string request = HTTP::buildRequest(connectedHost, req, url);
     return this->send(request, response);
-}
-
-bool WiFi::connect(const string &type, const string &address, const uint16_t &port) {
-    USB_Serial::transmit("WiFi connect\r\n");
-    const string cmd = "AT+CIPSTART=\"" + type + "\",\"" + address + "\"," + to_string(port);
-    if (!this->transmitCommand(cmd)) { return false; }
-    else {
-        connectedHost = address + ":" + to_string(port);
-        return true;
-    }
 }
 
 bool WiFi::send(const string &data, string &response) {
@@ -258,3 +264,4 @@ bool WiFi::send(const string &data, string &response) {
 
     return false;
 }
+// end transmision section

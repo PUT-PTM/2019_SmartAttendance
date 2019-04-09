@@ -41,15 +41,18 @@ class WiFi final {
 public:
     explicit WiFi() = default;
 
+
+    // uncategorized methods section
     bool init(UART_HandleTypeDef &_UART, bool connect);
 
     void setConfiguredNetworks(const rapidjson::Document &data);
 
+    bool join();
+    // end uncategorized methods section
 
-    bool transmitCommand(const std::string &cmd);
 
-    bool transmitCommand(const std::string &cmd, std::string *result);
 
+    // AT command section
     bool restore();
 
     bool reset();
@@ -74,16 +77,25 @@ public:
 
     bool join(const std::string &ssid, const std::string &passwd);
 
-    bool join();
-
     bool quit();
 
-    bool sendHttpRequest(const std::string &req, const std::string &url, std::string &response);
-    bool sendHttpRequest(const std::string &req, const std::string &url, const std::string &dataToSend, std::string &response);
-
     bool connect(const std::string &type, const std::string &address, const uint16_t &port);
+    // end AT command section
+
+
+
+    // transmision section
+    bool transmitCommand(const std::string &cmd);
+
+    bool transmitCommand(const std::string &cmd, std::string *result);
+
+    bool sendHttpRequest(const std::string &req, const std::string &url, std::string &response);
+
+    bool sendHttpRequest(const std::string &req, const std::string &url, const std::string &dataToSend,
+                         std::string &response);
 
     bool send(const std::string &data, std::string &response);
+    // end transmision section
 
 };
 

@@ -47,15 +47,22 @@ SmartAttendance::SmartAttendance(UART_HandleTypeDef &_uart, bool connect, GPIO_T
     }
 }
 
+/*
+ * Helper method
+ */
 void SmartAttendance::clearArray(char *cString, const uint16_t &size) {
     for (uint16_t i = 0; i < size; i++) {
         cString[i] = '\0';
     }
 }
 
+/*
+ * Adds entry to Presence table in database
+ */
 void SmartAttendance::addPresenceEntry(const int &SID) {
     string respData;
-    const string dataToSend = "{\"SID\":" + to_string(SID) + ",\"CID\":" + to_string(CID) + ",\"Room\":\"" + room + "\"}";
+    const string dataToSend =
+            "{\"SID\":" + to_string(SID) + ",\"CID\":" + to_string(CID) + ",\"Room\":\"" + room + "\"}";
 
     wifi.sendHttpRequest("POST", "/tables/Presence/", dataToSend, respData);
 
@@ -63,6 +70,10 @@ void SmartAttendance::addPresenceEntry(const int &SID) {
     USB_Serial::transmit(resp.toString() + "\r\n");
 }
 
+/*
+ * Reads configuration data from SD card (saved in JSON)
+ * Configures ESP and USB serial com
+ */
 bool SmartAttendance::configure() {
     // Partition mounting
     diodeRed.on();
