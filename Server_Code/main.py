@@ -10,6 +10,8 @@ import json
 from pathlib import Path
 
 app = Flask(__name__, template_folder='templates')
+
+# Add CORS (required for use in browser)
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
@@ -17,6 +19,7 @@ conn = None
 cursor = None
 
 
+# Connecting to database
 def db_init():
     global conn
     global cursor
@@ -73,39 +76,44 @@ def tables_student_exists_delete(sid):
 @app.route('/tables/StudentInfo/', methods=['GET', 'POST'])
 def tables_student():
     if request.method == 'GET':
+        # Get all students from database
         cursor.execute('select * from StudentInfo order by SID asc;')
-
-        resp = Response(status=200)
 
         # Convert table into json
         payload = json.loads('{"elements":[]}')
         row = cursor.fetchone()
         while row:
+            # Creating json table with data
             payload['elements'].append(
+                # Creating json table with data
                 json.loads(
-                    '{' +
-                    '"SID":' + str(row[0]) + ',' +
+                    '{"SID":' + str(row[0]) + ',' +
                     '"fName": "' + row[1] + '",' +
-                    '"lName": "' + row[2] + '"' +
-                    '}'
+                    '"lName": "' + row[2] + '"}'
                 )
             )
             row = cursor.fetchone()
         # While end
+
+        resp = Response(status=200)
         resp.data = json.dumps(payload)
         return resp
     # end if GET
     elif request.method == 'POST':
+        # Parse json payload
         payload = json.loads(request.data)
+
+        # Can't add students with existing index
         if student_exists(str(payload['SID'])):
             return Response(status=409)
 
+        # Get values from JSON
         sid = str(payload['SID'])
         f_name = '\'' + payload['fName'] + '\''
         l_name = '\'' + payload['lName'] + '\''
 
+        # Add entry to database
         sql_req = 'insert into StudentInfo values (' + sid + ',' + f_name + ',' + l_name + ');'
-        print(sql_req)
         cursor.execute(sql_req)
         conn.commit()
         print('Finished sql req!')
@@ -118,32 +126,36 @@ def tables_presence():
     if request.method == 'GET':
         cursor.execute('select * from Presence order by [Date] asc;')
 
-        resp = Response(status=200)
-
         # Convert table into json
         payload = json.loads('{"elements":[]}')
         row = cursor.fetchone()
         while row:
+            # Creating json table with data
             payload['elements'].append(
+                # Creating json table with data
                 json.loads(
-                    '{' +
-                    '"SID":' + str(row[0]) + ',' +
+                    '{"SID":' + str(row[0]) + ',' +
                     '"Date": "' + row[1] + '",' +
                     '"CID": "' + row[2] + '"' +
-                    '"Room": "' + row[3] + '"' +
-                    '}'
+                    '"Room": "' + row[3] + '"}'
                 )
             )
             row = cursor.fetchone()
         # While end
+
+        resp = Response(status=200)
         resp.data = json.dumps(payload)
         return resp
     # end if GET
     elif request.method == 'POST':
+        # Parse json payload
         payload = json.loads(request.data)
-        if not student_exists(payload['SID']):
-            return False
 
+        # Index must exist
+        if not student_exists(payload['SID']):
+            return Response(status=404)
+
+        # Get values from JSONs
         sid = str(payload.get('SID'))
         date = '\'' + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + '\''
         cid = payload.get('CID')
@@ -156,8 +168,6 @@ def tables_presence():
         if len(room) > 2:
             sql_req += ',' + room
         sql_req += ');'
-
-        print(sql_req)
 
         cursor.execute(sql_req)
         conn.commit()
