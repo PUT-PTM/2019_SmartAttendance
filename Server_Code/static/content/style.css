@@ -16,6 +16,7 @@
   background-color: steelblue;
   transition: background-color ease-in 300ms;
   outline: 0;
+  cursor: pointer;
 }
 .Content_Container .Buttons #But_Data {
   position: absolute;
@@ -87,6 +88,7 @@
   left: 0px;
   height: 50px;
   width: 100%;
+  min-width: 1000px;
   background-color: steelblue;
   box-shadow: 0 0 10px 10px rgba(0, 0, 0, 0.4);
   cursor: default;
@@ -148,6 +150,9 @@
   margin: 0;
   background-color: steelblue;
 }
+.Popups_Container .Inputs input {
+  width: 90%;
+}
 .Popups_Container .Inputs #Inputs_Title {
   position: absolute;
   top: 0px;
@@ -157,7 +162,6 @@
   font-size: 30px;
   margin-top: 0;
   color: white;
-  user-select: none;
 }
 .Popups_Container .Inputs #Input_SID {
   position: absolute;
@@ -188,6 +192,23 @@
   top: 160px;
   left: 50%;
   transform: translate(-50%, 0%);
+}
+.Popups_Container .Inputs button {
+  padding: 0;
+  border: none;
+  color: black;
+  background-color: white;
+  transition: background-color ease-in 300ms;
+  outline: 0;
+  cursor: pointer;
+}
+.Popups_Container .Inputs #But_Execute {
+  position: absolute;
+  bottom: 10px;
+  right: 50%;
+  transform: translate(50%, 0%);
+  width: 90%;
+  height: 20px;
 }
 
 body {
@@ -229,10 +250,16 @@ input[type=checkbox].input-validation-error {
   position: absolute;
   top: 0px;
   left: 0px;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  cursor: default;
   height: 100%;
   width: 100%;
   min-height: 640px;
   min-width: 960px;
+  display: none;
   margin: 0;
 }
 .Main_Container #PP {
@@ -242,10 +269,6 @@ input[type=checkbox].input-validation-error {
   height: 192px;
   width: 192px;
   cursor: pointer;
-}
-
-.Main_Container {
-  display: none;
 }
 
 /*# sourceMappingURL=style.css.map */

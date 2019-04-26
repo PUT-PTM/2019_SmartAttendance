@@ -130,7 +130,6 @@ def tables_student():
             return Response(status=200)
         else:
             return Response(status=400)
-    # end elif POST
 
 
 @app.route('/tables/', methods=['GET'])

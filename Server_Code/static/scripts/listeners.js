@@ -10,10 +10,6 @@ $(document).ready(function () {
         db_get_presence();
     });
     $('#But_Add').on("click", function () {
-        /*let index = parseInt($('#Input_SID').val());
-        let fName = $('#Input_fName').val();
-        let lName = $('#Input_lName').val();
-        db_add_row(index, fName, lName);*/
         let popups = $('.Popups_Container');
         if (popups.is(':visible')) {
             popups_fadeout();
@@ -29,8 +25,6 @@ $(document).ready(function () {
     });
     $('#But_Del').on("click", function () {
         popups_fadein('Delete student', popups_inputs_delete);
-        //let index = parseInt($('#Input_SID').val());
-        //db_delete_row(index);
     });
     $('#But_Pres_Add').on("click", function () {
         let index = parseInt($('#Input_SID').val());
@@ -45,11 +39,17 @@ $(document).ready(function () {
     $("button").on("mouseenter", function () {
         $(this).css({'backgroundColor': "lightsteelblue"});
     });
+    $("#Cancel").on("mouseenter", function () {
+        $(this).css('filter', 'brightness(80%)');
+    });
 });
 
 //Mouseout event atachment and handling
 $(document).ready(function () {
     $("button").on("mouseleave", function () {
         $(this).css({'backgroundColor': "steelblue"});
+    });
+    $("#Cancel").on("mouseleave", function () {
+        $(this).css('filter', 'brightness(100%)');
     });
 });

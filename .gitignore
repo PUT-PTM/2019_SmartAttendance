@@ -10,3 +10,4 @@ startup
 *.xml
 *.ld
 STM32F4_Code/.idea/STM32F4_Code.iml
+*.map

@@ -1,0 +1,11 @@
+@mixin abs-position($top, $left) {
+  position: absolute;
+  top: $top;
+  left: $left;
+}
+
+@mixin abs-position-inv($bottom, $right) {
+  position: absolute;
+  bottom: $bottom;
+  right: $right;
+}

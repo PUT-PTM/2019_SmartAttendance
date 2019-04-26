@@ -80,7 +80,11 @@ function db_add_presence(index, CID, room) {
     }
 }
 
-function db_add_row(index, fName, lName) {
+function db_add_row() {
+    let index = parseInt($('#Input_SID').val());
+    let fName = $('#Input_fName').val();
+    let lName = $('#Input_lName').val();
+
     if (!isNaN(index) && index.toString().indexOf('.') === -1) {
         if (fName.length !== 0 && lName.length !== 0) {
             let jsonData = '{"SID":' + index + ',"fName":"' + fName + '","lName":"' + lName + '"}';
@@ -89,18 +93,32 @@ function db_add_row(index, fName, lName) {
                 dataType: "json",
                 contentType: "application/json",
                 data: jsonData
-            }, function (data, textStatus, jqXHR) {
-                db_get_student_info();
-                return jqXHR.status === 200;
+            }).fail(function (response) {
+                if (response['status'] === 201) {
+                    db_get_student_info();
+                    alert('Student added successfully.');
+                }
+                else if (response['status'] === 409){
+                    alert('Student with given id already exists.');
+                }
             });
         }
     }
 }
 
-function db_delete_row(index) {
+function db_delete_row() {
+    let index = parseInt($('#Input_SID').val());
+
     $.ajax({
-        url: 'http://localhost:80/tables/StudentInfo/' + index.toString(),
-        type: 'DELETE'
+        url: 'http://localhost:80/tables/StudentInfo/?sid=' + index.toString(),
+        type: 'DELETE',
+        success: function () {
+            db_get_student_info();
+            alert('Student deleted successfully.');
+        },
+        error: function () {
+            alert('Delete failed.');
+        }
     });
 }
 
@@ -123,16 +141,33 @@ function popups_fadein(title, window_function) {
     popups.fadeIn(500);
 }
 
+
+function add_button_listeners(click_func) {
+    let button = $('#But_Execute');
+    button.on("mouseenter", function () {
+        $(this).css({'backgroundColor': "lightsteelblue"});
+    });
+    button.on("mouseleave", function () {
+        $(this).css({'backgroundColor': "white"});
+    });
+    button.on("click", function () {
+        click_func();
+    });
+}
+
 function popups_inputs_add(title) {
     let inputs = $('.Inputs');
     inputs.empty();
     inputs.append('<p id="Inputs_Title">' + title + '</p>');
-    inputs.append('<label for="Input_SID"></label><input type="number" name="SID" placeholder="Index" id="Input_SID">');
-    inputs.append('<label for="Input_fName"></label><input type="text" name="fName" placeholder="First name" id="Input_fName">');
-    inputs.append('<label for="Input_lName"></label><input type="text" name="lName" placeholder="Last name" id="Input_lName">');
-    inputs.css('height', '140px');
+    inputs.append('<input type="number" name="SID" placeholder="Index" id="Input_SID">');
+    inputs.append('<input type="text" name="fName" placeholder="First name" id="Input_fName">');
+    inputs.append('<input type="text" name="lName" placeholder="Last name" id="Input_lName">');
+    inputs.append('<button id="But_Execute">Execute</button>');
+    inputs.css('height', '160px');
     inputs.css('width', '200px');
     $('#Cancel').css('left', '96px');
+
+    add_button_listeners(db_add_row);
 }
 
 function popups_inputs_delete(title) {
@@ -140,7 +175,10 @@ function popups_inputs_delete(title) {
     inputs.empty();
     inputs.append('<p id="Inputs_Title">' + title + '</p>');
     inputs.append('<label for="Input_SID"></label><input type="number" name="SID" placeholder="Index" id="Input_SID">');
-    inputs.css('height', '80px');
+    inputs.append('<button id="But_Execute">Execute</button>');
+    inputs.css('height', '100px');
     inputs.css('width', '250px');
     $('#Cancel').css('left', '121px');
+
+    add_button_listeners(db_delete_row);
 }
