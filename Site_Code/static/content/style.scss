@@ -1,3 +1,8 @@
-@import "content.scss";
-@import "navbar.scss";
-@import "site.scss";
+@import 'content.scss';
+@import 'navbar.scss';
+@import 'popups.scss';
+@import 'site.scss';
+
+.Main_Container {
+  display: none;
+}

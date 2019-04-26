@@ -6,6 +6,7 @@
     <title>Smart Attendance</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="../static/scripts/logic.js"></script>
+    <script src="../static/scripts/listeners.js"></script>
     <script src="../static/scripts/boot.js"></script>
     <link rel="stylesheet" type="text/css" href="../static/content/style.css">
 </head>
@@ -18,15 +19,6 @@
             <button id="But_Add">Add</button>
             <button id="But_Del">Delete</button>
             <button id="But_Pres_Add">Add Presence Entry</button>
-        </div>
-
-        <div class="Inputs">
-            <p id="Inputs_Title">Inputs</p>
-            <label for="Input_SID"></label><input type="number" name="SID" placeholder="Index" id="Input_SID">
-            <label for="Input_fName"></label><input type="text" name="fName" placeholder="First name" id="Input_fName">
-            <label for="Input_lName"></label><input type="text" name="lName" placeholder="Last name" id="Input_lName">
-            <label for="Input_CID"></label><input type="number" name="CID" placeholder="Course number" id="Input_CID">
-            <label for="Input_Room"></label><input type="text" name="Room" placeholder="Room" id="Input_Room">
         </div>
 
         <div class="Tables">
@@ -46,6 +38,17 @@
                 </tr>
             </table>
         </div>
+    </div>
+    <div class="Popups_Container">
+        <div class="Inputs">
+            <p id="Inputs_Title">Inputs</p>
+            <label for="Input_SID"></label><input type="number" name="SID" placeholder="Index" id="Input_SID">
+            <label for="Input_fName"></label><input type="text" name="fName" placeholder="First name" id="Input_fName">
+            <label for="Input_lName"></label><input type="text" name="lName" placeholder="Last name" id="Input_lName">
+            <label for="Input_CID"></label><input type="number" name="CID" placeholder="Course number" id="Input_CID">
+            <label for="Input_Room"></label><input type="text" name="Room" placeholder="Room" id="Input_Room">
+        </div>
+        <img src="../static/images/Cancel.png" alt="Cancel" id="Cancel">
     </div>
     <div class="Navbar_Container">
         <h1 id="Title">Smart Attendance</h1>

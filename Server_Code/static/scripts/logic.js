@@ -103,3 +103,44 @@ function db_delete_row(index) {
         type: 'DELETE'
     });
 }
+
+function popups_fadeout() {
+    let popups = $('.Popups_Container');
+    let content = $('.Content_Container');
+    popups.stop();
+    content.stop();
+    content.fadeTo(1000, 1);
+    popups.fadeOut(500);
+}
+
+function popups_fadein(title, window_function) {
+    let popups = $('.Popups_Container');
+    let content = $('.Content_Container');
+    window_function(title);
+    content.stop();
+    popups.stop();
+    content.fadeTo(1000, 0.5);
+    popups.fadeIn(500);
+}
+
+function popups_inputs_add(title) {
+    let inputs = $('.Inputs');
+    inputs.empty();
+    inputs.append('<p id="Inputs_Title">' + title + '</p>');
+    inputs.append('<label for="Input_SID"></label><input type="number" name="SID" placeholder="Index" id="Input_SID">');
+    inputs.append('<label for="Input_fName"></label><input type="text" name="fName" placeholder="First name" id="Input_fName">');
+    inputs.append('<label for="Input_lName"></label><input type="text" name="lName" placeholder="Last name" id="Input_lName">');
+    inputs.css('height', '140px');
+    inputs.css('width', '200px');
+    $('#Cancel').css('left', '96px');
+}
+
+function popups_inputs_delete(title) {
+    let inputs = $('.Inputs');
+    inputs.empty();
+    inputs.append('<p id="Inputs_Title">' + title + '</p>');
+    inputs.append('<label for="Input_SID"></label><input type="number" name="SID" placeholder="Index" id="Input_SID">');
+    inputs.css('height', '80px');
+    inputs.css('width', '250px');
+    $('#Cancel').css('left', '121px');
+}

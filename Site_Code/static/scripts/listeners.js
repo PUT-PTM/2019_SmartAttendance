@@ -10,14 +10,27 @@ $(document).ready(function () {
         db_get_presence();
     });
     $('#But_Add').on("click", function () {
-        let index = parseInt($('#Input_SID').val());
+        /*let index = parseInt($('#Input_SID').val());
         let fName = $('#Input_fName').val();
         let lName = $('#Input_lName').val();
-        db_add_row(index, fName, lName);
+        db_add_row(index, fName, lName);*/
+        let popups = $('.Popups_Container');
+        if (popups.is(':visible')) {
+            popups_fadeout();
+        } else {
+            popups_fadein('Add student', popups_inputs_add);
+        }
+    });
+    $('#Cancel').on("click", function () {
+        let popups = $('.Popups_Container');
+        if (popups.is(':visible')) {
+            popups_fadeout();
+        }
     });
     $('#But_Del').on("click", function () {
-        let index = parseInt($('#Input_SID').val());
-        db_delete_row(index);
+        popups_fadein('Delete student', popups_inputs_delete);
+        //let index = parseInt($('#Input_SID').val());
+        //db_delete_row(index);
     });
     $('#But_Pres_Add').on("click", function () {
         let index = parseInt($('#Input_SID').val());
