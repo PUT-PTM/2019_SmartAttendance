@@ -1,0 +1,152 @@
+@import 'mixins.scss';
+
+$button-distance: 50px;
+$input-distance: 30px;
+
+
+.Content_Container {
+  @include abs-position(50px, 0px);
+
+  font-family: gliphicons-halflings-regular, monospace;
+
+  .Buttons {
+    @include abs-position(20px, 10px);
+
+    button {
+      padding: 0;
+      border: none;
+      color: white;
+      background-color: steelblue;
+      transition: background-color ease-in 300ms;
+    }
+
+    @mixin button-position($hierarchy) {
+      @include abs-position($button_distance * $hierarchy, 0px);
+    }
+
+    #But_Data {
+      @include button-position(0);
+
+      width: 250px;
+
+      font-size: 30px;
+    }
+
+    #But_Add {
+      @include button-position(1);
+
+      width: 250px;
+
+      font-size: 30px;
+    }
+
+    #But_Del {
+      @include button-position(2);
+
+      width: 250px;
+
+      font-size: 30px;
+    }
+
+    #But_Pres_Add {
+      @include button-position(3);
+
+      width: 250px;
+
+      font-size: 30px;
+    }
+  }
+
+  .Tables {
+    position: absolute;
+    top: 20px;
+    left: 300px;
+
+    #Table_Students {
+      position: absolute;
+      top: 0;
+      left: 0;
+      background-color: steelblue;
+      border-radius: 10px;
+
+      max-width: 290px;
+    }
+
+    #Table_Presence {
+      position: absolute;
+      top: 0;
+      left: 300px;
+      background-color: steelblue;
+      border-radius: 10px;
+
+      max-width: 290px;
+    }
+
+    th {
+      background-color: lightsteelblue;
+      border-radius: 10px;
+
+      width: auto;
+      white-space: nowrap;
+      padding: 5px;
+    }
+
+    td {
+      width: auto;
+      white-space: nowrap;
+
+      background-color: white;
+      border-radius: 10px;
+      padding: 5px;
+    }
+  }
+
+  .Inputs {
+    @include abs-position(300px, 10px);
+
+    height: 190px;
+    width: 175px;
+
+    padding: 0;
+    margin: 0;
+
+    background-color: steelblue;
+
+    #Inputs_Title {
+      @include abs-position(0px, 0px);
+
+      width: 100%;
+
+      text-align: center;
+      font-size: 30px;
+      margin-top: 0;
+
+      color: white;
+    }
+
+
+    @mixin input-position($hierarchy) {
+      @include abs-position(40px + $input_distance*$hierarchy, 10px);
+    }
+
+    #Input_SID {
+      @include input-position(0);
+    }
+
+    #Input_fName {
+      @include input-position(1);
+    }
+
+    #Input_lName {
+      @include input-position(2);
+    }
+
+    #Input_CID {
+      @include input-position(3);
+    }
+
+    #Input_Room {
+      @include input-position(4);
+    }
+  }
+}
