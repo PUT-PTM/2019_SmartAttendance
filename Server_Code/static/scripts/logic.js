@@ -1,4 +1,4 @@
-function db_get_content() {
+function db_get_student_info() {
     jQuery.get({
         url: 'http://localhost:80/tables/StudentInfo/'
     }, function (data) {
@@ -10,8 +10,8 @@ function db_get_content() {
             `<table id="Table_Students">
                 <tr>
                 <th>Index</th>
-                <th>Firstname</th>
-                <th>Lastname</th>
+                <th>First name</th>
+                <th>Last name</th>
                 </tr>
             </table>`
         );
@@ -21,6 +21,37 @@ function db_get_content() {
                 '<td>' + elem['SID'] + '</td>' +
                 '<td>' + elem['fName'] + '</td>' +
                 '<td>' + elem['lName'] + '</td>' +
+                '</tr>'
+            );
+        })
+    });
+}
+
+function db_get_presence() {
+    jQuery.get({
+        url: 'http://localhost:80/tables/'
+    }, function (data) {
+        let dataParse = JSON.parse(data);
+        if ($('#Table_Presence').length) {
+            $('#Table_Presence').remove();
+        }
+        $('.Tables').append(
+            `<table id="Table_Presence">
+                <tr>
+                <th>Index</th>
+                <th>Date</th>
+                <th>Course Name</th>
+                <th>Room</th>
+                </tr>
+            </table>`
+        );
+        dataParse['elements'].forEach(function (elem) {
+            $('#Table_Presence').append(
+                '<tr>' +
+                '<td>' + elem['SID'] + '</td>' +
+                '<td>' + elem['Date'] + '</td>' +
+                '<td>' + elem['sName'] + '</td>' +
+                '<td>' + elem['Room'] + '</td>' +
                 '</tr>'
             );
         })
@@ -59,7 +90,7 @@ function db_add_row(index, fName, lName) {
                 contentType: "application/json",
                 data: jsonData
             }, function (data, textStatus, jqXHR) {
-                db_get_content();
+                db_get_student_info();
                 return jqXHR.status === 200;
             });
         }

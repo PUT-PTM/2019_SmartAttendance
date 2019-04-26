@@ -6,7 +6,8 @@ $(document).ready(function () {
         window.open('https://www.put.poznan.pl', '_blank');
     });
     $('#But_Data').on("click", function () {
-        db_get_content();
+        db_get_student_info();
+        db_get_presence();
     });
     $('#But_Add').on("click", function () {
         let index = parseInt($('#Input_SID').val());
