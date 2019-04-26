@@ -12,9 +12,8 @@ $(document).ready(function () {
         db_get_presence();
     });
 
-    
-    function add_popup_listener(elemName, elemTitle, elemFunction)
-    {
+
+    function add_popup_listener(elemName, elemTitle, elemFunction) {
         $(elemName).on("click", function () {
             let popups = $('.Popups_Container');
             let title = String($('#Inputs_Title').html());
@@ -24,19 +23,19 @@ $(document).ready(function () {
             } else {
                 if (title !== elemTitle) {
                     popups.fadeOut(250, function () {
-                        popups_fadein('Add student', elemFunction)
+                        popups_fadein(elemTitle, elemFunction)
                     });
                 } else {
-                    popups_fadein('Add student', elemFunction);
+                    popups_fadein(elemTitle, elemFunction);
                 }
             }
         });
     }
 
     const popup_buttons = [
-          ['#But_Add', 'Add stuudent', popups_inputs_add],
-          ['#But_Del', 'Delete stuudent', popups_inputs_delete]
-      ];
+        ['#But_Add', 'Add student', popups_inputs_add],
+        ['#But_Del', 'Delete student', popups_inputs_delete]
+    ];
 
     popup_buttons.forEach(function (entry) {
         add_popup_listener(entry[0], entry[1], entry[2]);
@@ -58,7 +57,7 @@ $(document).ready(function () {
     });
 });
 
-//Mouseover event atachment and handling
+// Mouseover event atachment and handling
 $(document).ready(function () {
     $("button").on("mouseenter", function () {
         $(this).css({'backgroundColor': "lightsteelblue"});
@@ -68,12 +67,26 @@ $(document).ready(function () {
     });
 });
 
-//Mouseout event atachment and handling
+// Mouseout event atachment and handling
 $(document).ready(function () {
     $("button").on("mouseleave", function () {
         $(this).css({'backgroundColor': "steelblue"});
     });
     $("#Cancel").on("mouseleave", function () {
         $(this).css('filter', 'brightness(100%)');
+    });
+});
+
+$(window).ready(function () {
+    $(this).keydown(function(e){
+        if(e.keyCode === 27) {
+            $('#Cancel').click();
+        }
+    });
+    $(this).keypress(function(e){
+       e.preventDefault();
+    });
+    $(this).keydown(function(e){
+       e.preventDefault();
     });
 });
