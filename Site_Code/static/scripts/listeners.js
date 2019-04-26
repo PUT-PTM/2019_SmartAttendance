@@ -78,15 +78,24 @@ $(document).ready(function () {
 });
 
 $(window).ready(function () {
-    $(this).keydown(function(e){
-        if(e.keyCode === 27) {
-            $('#Cancel').click();
+    $(this).keydown(function (e) {
+            if ($('.Popups_Container').is(':visible')) {
+                if (e.keyCode === 27) {
+                    $('#Cancel').click();
+                } else if (e.keyCode === 13) {
+                    $('#But_Execute').click();
+                }
+            }
+        }
+    );
+    $(this).keypress(function (e) {
+        if (e.keyCode === 8) {
+            e.preventDefault();
         }
     });
-    $(this).keypress(function(e){
-       e.preventDefault();
-    });
-    $(this).keydown(function(e){
-       e.preventDefault();
+    $(this).keydown(function (e) {
+        if (e.keyCode === 8) {
+            e.preventDefault();
+        }
     });
 });

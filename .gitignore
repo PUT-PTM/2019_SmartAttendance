@@ -10,7 +10,8 @@ startup
 *.xml
 *.ld
 STM32F4_Code/.idea/STM32F4_Code.iml
-*.map
-*.scss
+*.css.map
+Site_Code/static/content/*.css
+Server_Code/static/content/*.scss
 Server_Code/static/content/mixins.css
 Server_Code/static/content/popups.css
