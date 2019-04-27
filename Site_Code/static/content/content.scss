@@ -4,7 +4,14 @@
 .Content_Container {
   @include abs-position(50px, 0px);
 
+  height: calc(100% - 50px);
+  width: 100%;
   font-family: gliphicons-halflings-regular, monospace;
+
+  .Content_Background {
+    height: 100%;
+    width: 100%;
+  }
 
   .Buttons {
     $button-distance: 50px;

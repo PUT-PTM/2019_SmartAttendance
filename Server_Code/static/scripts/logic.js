@@ -97,8 +97,7 @@ function db_add_row() {
                 if (response['status'] === 201) {
                     db_get_student_info();
                     alert('Student added successfully.');
-                }
-                else if (response['status'] === 409){
+                } else if (response['status'] === 409) {
                     alert('Student with given id already exists.');
                 }
             });
@@ -122,16 +121,16 @@ function db_delete_row() {
     });
 }
 
-function popups_fadeout() {
+function popup_fadeout(finish) {
     let popups = $('.Popups_Container');
     let content = $('.Content_Container');
     popups.stop();
     content.stop();
     content.fadeTo(1000, 1);
-    popups.fadeOut(500);
+    popups.fadeOut(500, finish);
 }
 
-function popups_fadein(title, window_function) {
+function popup_fadein(title, window_function) {
     let popups = $('.Popups_Container');
     let content = $('.Content_Container');
     window_function(title);
@@ -155,7 +154,8 @@ function add_button_listeners(click_func) {
     });
 }
 
-function popups_inputs_add(title) {
+function popup_inputs_add(title) {
+    let popups = $('.Popups_Container');
     let inputs = $('.Inputs');
     inputs.empty();
     inputs.append('<p id="Inputs_Title">' + title + '</p>');
@@ -165,12 +165,15 @@ function popups_inputs_add(title) {
     inputs.append('<button id="But_Execute">Execute</button>');
     inputs.css('height', '160px');
     inputs.css('width', '200px');
-    $('#Cancel').css('left', '96px');
+    popups.css('height', '170px');
+    popups.css('width', '210px');
+    $('#Cancel').css('left', '185px');
 
     add_button_listeners(db_add_row);
 }
 
-function popups_inputs_delete(title) {
+function popup_inputs_delete(title) {
+    let popups = $('.Popups_Container');
     let inputs = $('.Inputs');
     inputs.empty();
     inputs.append('<p id="Inputs_Title">' + title + '</p>');
@@ -178,7 +181,9 @@ function popups_inputs_delete(title) {
     inputs.append('<button id="But_Execute">Execute</button>');
     inputs.css('height', '100px');
     inputs.css('width', '250px');
-    $('#Cancel').css('left', '121px');
+    popups.css('height', '110px');
+    popups.css('width', '260px');
+    $('#Cancel').css('left', '235px');
 
     add_button_listeners(db_delete_row);
 }

@@ -2,7 +2,13 @@
   position: absolute;
   top: 50px;
   left: 0px;
+  height: calc(100% - 50px);
+  width: 100%;
   font-family: gliphicons-halflings-regular, monospace;
+}
+.Content_Container .Content_Background {
+  height: 100%;
+  width: 100%;
 }
 .Content_Container .Buttons {
   position: absolute;
@@ -128,22 +134,19 @@
 .Popups_Container {
   font-family: gliphicons-halflings-regular, monospace;
   position: absolute;
-  top: 0px;
+  top: 200px;
   left: 50%;
-  transform: translate(-50%, 0);
 }
 .Popups_Container #Cancel {
   position: absolute;
-  top: 190px;
-  left: 96px;
-  transform: translate(-50%, 0);
+  top: 0px;
+  left: 300px;
   cursor: pointer;
 }
 .Popups_Container .Inputs {
   position: absolute;
-  top: 200px;
+  top: 10px;
   left: 0px;
-  transform: translate(-50%, 0);
   height: 190px;
   width: 200px;
   padding: 0;
@@ -166,32 +169,27 @@
 .Popups_Container .Inputs #Input_SID {
   position: absolute;
   top: 40px;
-  left: 50%;
-  transform: translate(-50%, 0%);
+  left: 4%;
 }
 .Popups_Container .Inputs #Input_fName {
   position: absolute;
   top: 70px;
-  left: 50%;
-  transform: translate(-50%, 0%);
+  left: 4%;
 }
 .Popups_Container .Inputs #Input_lName {
   position: absolute;
   top: 100px;
-  left: 50%;
-  transform: translate(-50%, 0%);
+  left: 4%;
 }
 .Popups_Container .Inputs #Input_CID {
   position: absolute;
   top: 130px;
-  left: 50%;
-  transform: translate(-50%, 0%);
+  left: 4%;
 }
 .Popups_Container .Inputs #Input_Room {
   position: absolute;
   top: 160px;
-  left: 50%;
-  transform: translate(-50%, 0%);
+  left: 4%;
 }
 .Popups_Container .Inputs button {
   padding: 0;
@@ -205,8 +203,7 @@
 .Popups_Container .Inputs #But_Execute {
   position: absolute;
   bottom: 10px;
-  right: 50%;
-  transform: translate(50%, 0%);
+  right: 5%;
   width: 90%;
   height: 20px;
 }

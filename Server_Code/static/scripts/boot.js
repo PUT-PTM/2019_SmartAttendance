@@ -1,4 +1,3 @@
-
 $(document).ready(function () {
     let main = $('.Main_Container');
     let popups = $('.Popups_Container');

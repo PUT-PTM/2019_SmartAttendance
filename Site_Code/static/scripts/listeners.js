@@ -1,78 +1,145 @@
 $(document).ready(function () {
-    $('#GitHub').on("click", function () {
+    $('#GitHub').on('click', function () {
         window.open('https://github.com/PUT-PTM/2019_SmartAttendance', '_blank');
     });
 
-    $('#PP').on("click", function () {
+    $('#PP').on('click', function () {
         window.open('https://www.put.poznan.pl', '_blank');
     });
 
-    $('#But_Data').on("click", function () {
+    $('#But_Data').on('click', function () {
         db_get_student_info();
         db_get_presence();
     });
 
 
+    // Popup events
     function add_popup_listener(elemName, elemTitle, elemFunction) {
-        $(elemName).on("click", function () {
+        $(elemName).on('click', function () {
             let popups = $('.Popups_Container');
             let title = String($('#Inputs_Title').html());
 
             if (popups.is(':visible') && title === elemTitle) {
-                popups_fadeout();
+                popup_fadeout(reset_popup_position);
             } else {
                 if (title !== elemTitle) {
                     popups.fadeOut(250, function () {
-                        popups_fadein(elemTitle, elemFunction)
+                        popup_fadein(elemTitle, elemFunction)
                     });
                 } else {
-                    popups_fadein(elemTitle, elemFunction);
+                    popup_fadein(elemTitle, elemFunction);
                 }
             }
         });
     }
 
     const popup_buttons = [
-        ['#But_Add', 'Add student', popups_inputs_add],
-        ['#But_Del', 'Delete student', popups_inputs_delete]
+        ['#But_Add', 'Add student', popup_inputs_add],
+        ['#But_Del', 'Delete student', popup_inputs_delete]
     ];
-
     popup_buttons.forEach(function (entry) {
         add_popup_listener(entry[0], entry[1], entry[2]);
     });
 
+    function reset_popup_position() {
+        let popups = $('.Popups_Container');
+        popups.css('top', '200px');
+        popups.css('left', 'calc(50%)');
+    }
 
-    $('#Cancel').on("click", function () {
+    $('#Cancel').on('click', function () {
         let popups = $('.Popups_Container');
         if (popups.is(':visible')) {
-            popups_fadeout();
+            popup_fadeout(reset_popup_position);
         }
     });
 
-    $('#But_Pres_Add').on("click", function () {
-        let index = parseInt($('#Input_SID').val());
-        let CID = parseInt($('#Input_CID').val());
-        let room = parseInt($('#Input_Room').val());
-        db_add_presence(index, CID, room);
+    $('.Content_Background').on('click', function () {
+        if ($('.Popups_Container').is(':visible')) {
+            $('#Cancel').click();
+        }
+    });
+
+    $('.Tables').on('click', function () {
+        if ($('.Popups_Container').is(':visible')) {
+            $('#Cancel').click();
+        }
+    });
+
+
+    let inputsPressed = false;
+    let posPrev = null;
+
+    $('.Inputs').on('mousedown', function (e) {
+        inputsPressed = true;
+        posPrev = [e.pageX, e.pageY];
+
+        let popups = $('.Popups_Container');
+        let content = $('.Content_Container');
+
+        if (popups.is(':visible')) {
+            $(document).on('mousemove', function (e) {
+                if (popups.is(':visible')) {
+                    const pos = [e.pageX, e.pageY];
+                    const posElem = popups.position();
+                    const posContent = content.position();
+                    const contentBottom = posContent.top + content.height();
+
+                    let newTopPos = posElem.top;
+
+                    // Top and bottom safeguards
+                    if (pos[1] > posContent.top) {
+                        newTopPos += pos[1] - posPrev[1];
+                    } else {
+                        newTopPos = posContent.top;
+                    }
+                    if (newTopPos < posContent.top){
+                        newTopPos = posContent.top;
+                    }
+
+                    if (pos[1] + popups.height() > contentBottom) {
+                        newTopPos = contentBottom - popups.height();
+                    }
+                    popups.css('top', newTopPos);
+
+                    let newLeftPos = pos[0] - popups.width() / 2;
+
+                    // Left and right safeguards
+                    if (newLeftPos < 0) {
+                        newLeftPos = 0;
+                    } else if (newLeftPos > content.width() - popups.width()) {
+                        newLeftPos = content.width() - popups.width();
+                    }
+                    popups.css('left', newLeftPos);
+                    posPrev = pos;
+                }
+            });
+        }
+    });
+    $(document).on('mouseup', function () {
+        if (inputsPressed) {
+            $(document).off('mousemove');
+            posPrev = null;
+        }
     });
 });
 
 // Mouseover event atachment and handling
 $(document).ready(function () {
-    $("button").on("mouseenter", function () {
-        $(this).css({'backgroundColor': "lightsteelblue"});
+    $('button').on('mouseenter', function () {
+        $(this).css({'backgroundColor': 'lightsteelblue'});
     });
-    $("#Cancel").on("mouseenter", function () {
+    $('#Cancel').on('mouseenter', function () {
         $(this).css('filter', 'brightness(80%)');
     });
 });
 
 // Mouseout event atachment and handling
 $(document).ready(function () {
-    $("button").on("mouseleave", function () {
-        $(this).css({'backgroundColor': "steelblue"});
+    $('button').on('mouseleave', function () {
+        $(this).css({'backgroundColor': 'steelblue'});
     });
-    $("#Cancel").on("mouseleave", function () {
+    $('#Cancel').on('mouseleave', function () {
         $(this).css('filter', 'brightness(100%)');
     });
 });

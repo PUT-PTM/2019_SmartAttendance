@@ -12,7 +12,6 @@ app = Flask(__name__, template_folder='templates')
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
-
 config_json = json.loads(Path('config.json').read_text())
 
 
