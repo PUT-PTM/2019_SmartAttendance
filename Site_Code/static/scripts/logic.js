@@ -187,3 +187,23 @@ function popup_inputs_delete(title) {
 
     add_button_listeners(db_delete_row);
 }
+
+function popup_inputs_add_presence(title) {
+    let popups = $('.Popups_Container');
+    let inputs = $('.Inputs');
+    inputs.empty();
+    inputs.append('<p id="Inputs_Title">' + title + '</p>');
+    inputs.append('<label for="Input_SID"></label><input type="number" name="SID" placeholder="Index" id="Input_SID">');
+    inputs.append('<label for="Input_CID"></label><input type="number" name="CID" placeholder="Course ID" id="Input_CID">');
+    inputs.append('<input type="text" name="Room" placeholder="Room" id="Input_Room">');
+    inputs.append('<button id="But_Execute">Execute</button>');
+    inputs.css('height', '160px');
+    inputs.css('width', '250px');
+    popups.css('height', '170px');
+    popups.css('width', '260px');
+    $('#Cancel').css('left', '235px');
+    $("#Input_CID").css('top','70px');
+    $("#Input_Room").css('top','100px');
+
+    add_button_listeners(db_delete_row);
+}

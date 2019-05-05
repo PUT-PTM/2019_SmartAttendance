@@ -35,7 +35,8 @@ $(document).ready(function () {
 
     const popup_buttons = [
         ['#But_Add', 'Add student', popup_inputs_add],
-        ['#But_Del', 'Delete student', popup_inputs_delete]
+        ['#But_Del', 'Delete student', popup_inputs_delete],
+        ['#But_Pres_Add', 'Add presence', popup_inputs_add_presence]
     ];
     popup_buttons.forEach(function (entry) {
         add_popup_listener(entry[0], entry[1], entry[2]);
@@ -93,7 +94,7 @@ $(document).ready(function () {
                     } else {
                         newTopPos = posContent.top;
                     }
-                    if (newTopPos < posContent.top){
+                    if (newTopPos < posContent.top) {
                         newTopPos = posContent.top;
                     }
 
@@ -124,7 +125,7 @@ $(document).ready(function () {
     });
 });
 
-// Mouseover event atachment and handling
+// Mouseover event attachment and handling
 $(document).ready(function () {
     $('button').on('mouseenter', function () {
         $(this).css({'backgroundColor': 'lightsteelblue'});
@@ -134,7 +135,7 @@ $(document).ready(function () {
     });
 });
 
-// Mouseout event atachment and handling
+// Mouseout event attachment and handling
 $(document).ready(function () {
     $('button').on('mouseleave', function () {
         $(this).css({'backgroundColor': 'steelblue'});
@@ -144,6 +145,7 @@ $(document).ready(function () {
     });
 });
 
+// Keydown event attachment and handling
 $(window).ready(function () {
     $(this).keydown(function (e) {
             if ($('.Popups_Container').is(':visible')) {

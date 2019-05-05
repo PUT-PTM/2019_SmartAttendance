@@ -54,12 +54,24 @@
 }
 .Content_Container .Tables {
   position: absolute;
-  top: 20px;
+  top: 0;
   left: 300px;
+}
+.Content_Container .Tables #Table_Students_Title {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: 20px;
+}
+.Content_Container .Tables #Table_Presence_Title {
+  position: absolute;
+  top: 0;
+  left: 300px;
+  font-size: 20px;
 }
 .Content_Container .Tables #Table_Students {
   position: absolute;
-  top: 0;
+  top: 50px;
   left: 0;
   background-color: steelblue;
   border-radius: 10px;
@@ -67,7 +79,7 @@
 }
 .Content_Container .Tables #Table_Presence {
   position: absolute;
-  top: 0;
+  top: 50px;
   left: 300px;
   background-color: steelblue;
   border-radius: 10px;

@@ -12,7 +12,6 @@
   }
 
   .Inputs {
-    $input-distance: 30px;
 
     @include abs-position(10px, 0px);
 
@@ -40,6 +39,7 @@
       color: white;
     }
 
+    $input-distance: 30px;
     @mixin input-position($hierarchy) {
       @include abs-position(40px + $input_distance*$hierarchy, 4%);
     }
