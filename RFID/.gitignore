@@ -1,0 +1,10 @@
+.settings
+Debug
+Drivers
+startup
+*.tmp
+*.xml
+*.mxproject
+*.projct
+*.txt
+*.ld
