@@ -1,0 +1,4 @@
+G:/Programming_Projects/2019_SmartAttendance/STM32F4_Code/cmake-build-debug/CMakeFiles/WIFI_Test.elf.dir
+G:/Programming_Projects/2019_SmartAttendance/STM32F4_Code/cmake-build-debug/CMakeFiles/UPLOAD.dir
+G:/Programming_Projects/2019_SmartAttendance/STM32F4_Code/cmake-build-debug/CMakeFiles/edit_cache.dir
+G:/Programming_Projects/2019_SmartAttendance/STM32F4_Code/cmake-build-debug/CMakeFiles/rebuild_cache.dir
