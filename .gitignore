@@ -1,0 +1,15 @@
+cmake-build-debug/
+Drivers
+startup
+.idea/*
+*.tmp
+*.txt
+*.cproject
+*.project
+*.mxproject
+*.xml
+*.ld
+*.ioc
+*.css.map
+*.iml
+*stm32*
