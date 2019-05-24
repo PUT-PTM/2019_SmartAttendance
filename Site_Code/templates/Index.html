@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Attendance</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="../static/scripts/logic.js"></script>
+    <script src="../static/scripts/listeners.js"></script>
+    <script src="../static/scripts/boot.js"></script>
+    <link rel="stylesheet" type="text/css" href="../static/content/style.css">
+</head>
+
+<body>
+<div class="Main_Container">
+    <div class="Content_Container">
+        <div class="Tables">
+            <p id="Table_Students_Title"><b>Students</b></p>
+            <p id="Table_Presence_Title"><b>Presence</b></p>
+            <table id="Table_Students">
+                <tr>
+                    <th>Index</th>
+                    <th>First name</th>
+                    <th>Last name</th>
+                </tr>
+            </table>
+            <table id="Table_Presence">
+                <tr>
+                    <th>Index</th>
+                    <th>Date</th>
+                    <th>Course Name</th>
+                    <th>Room</th>
+                </tr>
+            </table>
+        </div>
+        <div class="Content_Background"></div>
+        <div class="Buttons">
+            <button id="But_Data">Refresh</button>
+            <button id="But_Add">Add</button>
+            <button id="But_Del">Delete</button>
+            <button id="But_Pres_Add">Add Presence Entry</button>
+        </div>
+    </div>
+    <div class="Popups_Container">
+        <div class="Inputs">
+            <p id="Inputs_Title">Inputs</p>
+            <input type="number" name="SID" placeholder="Index" id="Input_SID">
+            <input type="text" name="fName" placeholder="First name" id="Input_fName">
+            <input type="text" name="lName" placeholder="Last name" id="Input_lName">
+            <input type="number" name="CID" placeholder="Course number" id="Input_CID">
+            <input type="text" name="Room" placeholder="Room" id="Input_Room">
+            <button id="But_Execute">Execute</button>
+        </div>
+        <img src="../static/images/Cancel.png" alt="Cancel" id="Cancel">
+    </div>
+    <div class="Navbar_Container">
+        <h1 id="Title">Smart Attendance</h1>
+        <h2 id="Account">Repository</h2>
+        <img src="../static/images/GitHub.png" alt="GitHub" id="GitHub">
+    </div>
+    <img src="../static/images/PP.png" alt="PP" id="PP">
+</div>
+</body>
+</html>

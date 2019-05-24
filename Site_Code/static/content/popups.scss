@@ -1,0 +1,84 @@
+@import 'mixins.scss';
+
+.Popups_Container {
+  font-family: gliphicons-halflings-regular, monospace;
+
+  @include abs-position(200px, 50%);
+
+  #Cancel {
+    @include abs-position(0px, 300px);
+
+    cursor: pointer;
+  }
+
+  .Inputs {
+
+    @include abs-position(10px, 0px);
+
+    height: 190px;
+    width: 200px;
+
+    padding: 0;
+    margin: 0;
+
+    background-color: steelblue;
+
+    input {
+      width: 90%;
+    }
+
+    #Inputs_Title {
+      @include abs-position(0px, 0px);
+
+      width: 100%;
+
+      text-align: center;
+      font-size: 30px;
+      margin-top: 0;
+
+      color: white;
+    }
+
+    $input-distance: 30px;
+    @mixin input-position($hierarchy) {
+      @include abs-position(40px + $input_distance*$hierarchy, 4%);
+    }
+
+    #Input_SID {
+      @include input-position(0);
+    }
+
+    #Input_fName {
+      @include input-position(1);
+    }
+
+    #Input_lName {
+      @include input-position(2);
+    }
+
+    #Input_CID {
+      @include input-position(3);
+    }
+
+    #Input_Room {
+      @include input-position(4);
+    }
+
+    button {
+      padding: 0;
+      border: none;
+      color: black;
+      background-color: white;
+      transition: background-color ease-in 300ms;
+      outline: 0;
+      cursor: pointer;
+    }
+
+    #But_Execute {
+      @include abs-position-inv(10px, 5%);
+
+      width: 90%;
+      height: 20px;
+    }
+  }
+}
