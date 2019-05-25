@@ -24,14 +24,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "ff.h"
-#include "rapidjson/document.h"
-#include <SmartAttendance.hpp>
-
-#include "WiFi.hpp"
-#include "GPIO_Pin.hpp"
-#include "USB_Serial.hpp"
-#include "HTTP.hpp"
+#include "mainpp.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -109,15 +102,12 @@ int main(void) {
     MX_SPI3_Init();
     MX_SPI1_Init();
     /* USER CODE BEGIN 2 */
-    auto sa = SmartAttendance();
-    sa.configure(true);
-
-    // W tej funkcji jest nieskończona pętla
-    sa.loop();
+    setup();
     /* USER CODE END 2 */
 
     /* Infinite loop */
     /* USER CODE BEGIN WHILE */
+    loop();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

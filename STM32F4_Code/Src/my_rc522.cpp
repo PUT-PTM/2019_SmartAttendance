@@ -196,7 +196,7 @@ void CRC_calc(uint8_t *in_data, uint8_t size, uint8_t *out_data) {
     out_data[1] = read_register(MFRC522_REG_CRC_RESULT_M);
 }
 
-void init(void) {
+void RFID_init(void) {
     reset();
     write_register(MFRC522_REG_T_MODE, 0x8D);
     write_register(MFRC522_REG_T_PRESCALER, 0x3E);

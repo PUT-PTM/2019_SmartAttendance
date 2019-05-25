@@ -79,6 +79,12 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define RFID_CS_Pin GPIO_PIN_4
 #define RFID_CS_GPIO_Port GPIOA
+#define SPI1_SCK_Pin GPIO_PIN_5
+#define SPI1_SCK_GPIO_Port GPIOA
+#define SPI1_MISO_Pin GPIO_PIN_6
+#define SPI1_MISO_GPIO_Port GPIOA
+#define SPI1_MOSI_Pin GPIO_PIN_7
+#define SPI1_MOSI_GPIO_Port GPIOA
 #define ESP_EN_Pin GPIO_PIN_9
 #define ESP_EN_GPIO_Port GPIOD
 #define ESP_FLASH_Pin GPIO_PIN_10
@@ -97,6 +103,12 @@ void Error_Handler(void);
 #define UART3_TX_GPIO_Port GPIOC
 #define UART3_RX_Pin GPIO_PIN_11
 #define UART3_RX_GPIO_Port GPIOC
+#define SPI__SCK_Pin GPIO_PIN_3
+#define SPI__SCK_GPIO_Port GPIOB
+#define SPI3_MISO_Pin GPIO_PIN_4
+#define SPI3_MISO_GPIO_Port GPIOB
+#define SPI3_MOSI_Pin GPIO_PIN_5
+#define SPI3_MOSI_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

@@ -81,27 +81,25 @@ function db_add_presence(index, CID, room) {
 }
 
 function db_add_row() {
-    let index = parseInt($('#Input_SID').val());
+    let index = $('#Input_SID').val();
     let fName = $('#Input_fName').val();
     let lName = $('#Input_lName').val();
 
-    if (!isNaN(index) && index.toString().indexOf('.') === -1) {
-        if (fName.length !== 0 && lName.length !== 0) {
-            let jsonData = '{"SID":' + index + ',"fName":"' + fName + '","lName":"' + lName + '"}';
-            jQuery.post({
-                url: 'http://localhost:80/tables/StudentInfo/',
-                dataType: "json",
-                contentType: "application/json",
-                data: jsonData
-            }).fail(function (response) {
-                if (response['status'] === 201) {
-                    db_get_student_info();
-                    alert('Student added successfully.');
-                } else if (response['status'] === 409) {
-                    alert('Student with given id already exists.');
-                }
-            });
-        }
+    if (fName.length !== 0 && lName.length !== 0) {
+        let jsonData = '{"SID":' + index + ',"fName":"' + fName + '","lName":"' + lName + '"}';
+        jQuery.post({
+            url: 'http://localhost:80/tables/StudentInfo/',
+            dataType: "json",
+            contentType: "application/json",
+            data: jsonData
+        }).fail(function (response) {
+            if (response['status'] === 201) {
+                db_get_student_info();
+                alert('Student added successfully.');
+            } else if (response['status'] === 409) {
+                alert('Student with given id already exists.');
+            }
+        });
     }
 }
 
@@ -202,8 +200,8 @@ function popup_inputs_add_presence(title) {
     popups.css('height', '170px');
     popups.css('width', '260px');
     $('#Cancel').css('left', '235px');
-    $("#Input_CID").css('top','70px');
-    $("#Input_Room").css('top','100px');
+    $("#Input_CID").css('top', '70px');
+    $("#Input_Room").css('top', '100px');
 
     add_button_listeners(db_delete_row);
 }

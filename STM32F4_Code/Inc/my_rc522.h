@@ -125,7 +125,7 @@ uint8_t anticoll(uint8_t *id);
 
 void CRC_calc(uint8_t *in_data, uint8_t size, uint8_t *out_data);
 
-void init(void);
+void RFID_init(void);
 
 void reset(void);
 

@@ -40,10 +40,10 @@ def site():
 
 @app.route('/test')
 def test():
-    return 'This is a long message response. Deal with it! Muahahahahahaha!!! xd wtf da fuq!'
+    return 'Test tEst teSt tesT TEst tESt teST TESt tEST TEST'
 
 
-def student_exists(sid):
+def student_exists(sid: int):
     conn = db_connect()
     cursor = conn.cursor()
     # Bad request
@@ -63,7 +63,7 @@ def tables_student():
         conn = db_connect()
         cursor = conn.cursor()
         # Get all students from database
-        cursor.execute('select * from StudentInfo order by SID asc;')
+        cursor.execute('select * from StudentInfo order by SID;')
 
         # Convert table into json
         payload = json.loads('{"elements":[]}')
@@ -98,9 +98,10 @@ def tables_student():
     elif request.method == 'POST':
         # Parse json payload
         payload = json.loads(request.data)
+        print(request.data)
 
         # Can't add students with existing index
-        if student_exists(str(payload['SID'])):
+        if student_exists(payload['SID']):
             return Response(status=409)
 
         # Get values from JSON
@@ -138,7 +139,8 @@ def tables():
         cursor = conn.cursor()
         # Get all students from database
         cursor.execute(
-            'select S.SID, P.Date, C.sName, P.Room from Presence as P join Courses as C on P.CID=C.CID join StudentInfo as S on S.SID=P.SID;'
+            'select S.SID, P.Date, C.sName, P.Room from Presence as P join Courses as C on P.CID=C.CID ' +
+            'join StudentInfo as S on S.SID=P.SID;'
         )
 
         # Convert table into json
@@ -166,11 +168,13 @@ def tables():
 
 @app.route('/tables/Presence/', methods=['GET', 'POST'])
 def tables_presence():
+    print(request.data)
+
     if request.method == 'GET':
         conn = db_connect()
         cursor = conn.cursor()
 
-        cursor.execute('select * from Presence order by [Date] asc;')
+        cursor.execute('select * from Presence order by Date;')
 
         # Convert table into json
         payload = json.loads('{"elements":[]}')
@@ -227,6 +231,7 @@ def tables_presence():
 
 
 if __name__ == '__main__':
+
     app.run(
         host='0.0.0.0',
         port=80,

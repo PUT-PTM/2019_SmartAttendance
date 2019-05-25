@@ -157,14 +157,4 @@ $(window).ready(function () {
             }
         }
     );
-    $(this).keypress(function (e) {
-        if (e.keyCode === 8) {
-            e.preventDefault();
-        }
-    });
-    $(this).keydown(function (e) {
-        if (e.keyCode === 8) {
-            e.preventDefault();
-        }
-    });
 });
