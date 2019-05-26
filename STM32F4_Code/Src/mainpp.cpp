@@ -18,7 +18,7 @@ extern UART_HandleTypeDef huart3;
 /*
  * Konwertuje tablicę 4 bajtów na 32 bitowy int.
  */
-uint32_t bytesToInt(unsigned char data[4]) {
+uint32_t bytesToInt(const uint8_t data[4]) {
     uint32_t result = data[0];
     result <<= 8;
     result += data[1];
@@ -29,6 +29,14 @@ uint32_t bytesToInt(unsigned char data[4]) {
     return result;
 }
 
+void copy_id(const uint8_t input[4], uint8_t output[4]) {
+    for (uint8_t i = 0; i < 4; i++) {
+        output[i] = input[i];
+    }
+}
+
+
+//Ta funkcja dzieje sie przed pętlą główną
 void setup(void) {
     //Inicjalizacja czytnika RFID
     RFID_init();
@@ -54,15 +62,9 @@ void setup(void) {
     }
 }
 
-void copy_id(const uint8_t input[4], uint8_t output[4]) {
-    for (uint8_t i = 0; i < 4; i++) {
-        output[i] = input[i];
-    }
-}
-
 void loop(void) {
-    unsigned char CardIdPrev[4]{0, 0, 0, 0};
-    unsigned char CardId[5]{0, 0, 0, 0, 0};
+    uint8_t CardIdPrev[4]{0, 0, 0, 0};
+    uint8_t CardId[5]{0, 0, 0, 0, 0};
 
     diodeOrange.on();
 
