@@ -85,6 +85,8 @@ void Error_Handler(void);
 #define SPI1_MISO_GPIO_Port GPIOA
 #define SPI1_MOSI_Pin GPIO_PIN_7
 #define SPI1_MOSI_GPIO_Port GPIOA
+#define RFID_RST_Pin GPIO_PIN_4
+#define RFID_RST_GPIO_Port GPIOC
 #define ESP_EN_Pin GPIO_PIN_9
 #define ESP_EN_GPIO_Port GPIOD
 #define ESP_FLASH_Pin GPIO_PIN_10
