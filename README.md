@@ -19,4 +19,6 @@ that is it. Users are also given 4 leds to inform about its state:
      - blue -> card is read and send to the database
      - red -> network configuration failed (need to restart)
      
-
+## Credits
+[Piotr Kwiatkowski (kwitnoncy)](https://github.com/kwitnoncy)<br>
+[Tomasz Kiljańczyk (Gunock)](https://github.com/Gunock)
