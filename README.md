@@ -39,7 +39,12 @@ The main purpose was to build card reader that would be very easy to use. Studen
 
 Remember that device setup takes few seconds to finish.
      
+## Future improvements
+     
+## Attributions
+     
 ## License
+Project is based on MIT license. Check LICENSE file for further details.
      
 ## Credits
 [Piotr Kwiatkowski (kwitnoncy)](https://github.com/kwitnoncy)<br>
