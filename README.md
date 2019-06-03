@@ -40,9 +40,13 @@ The main purpose was to build card reader that would be very easy to use. Studen
 Remember that device setup takes few seconds to finish.
      
 ## Future improvements
-     
+- better SD cards reader
+- handling real students' card
+- better packing 
+- LCD screen to display states etc
+- improve power usage (the device is always on)
 ## Attributions
-     
+- https://github.com/xtrinch/stm32f7-demos/tree/master/07-rfid-rc522 (RFID)
 ## License
 Project is based on MIT license. Check LICENSE file for further details.
      
