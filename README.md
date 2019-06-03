@@ -1,9 +1,9 @@
 # Smart Attendance
 
 ## Overview
-Smart Attendance is a system that help lecturers checking attendance at classes.
+Smart Attendance is a system that helps lecturers checking attendance at classes.
 
-One day I thought that there is a better way to check attendance that to read every name from a list and wait for 
+One day I thought that there could be a better way to check attendance than to read every name from a list and wait for 
 students response.  
 
 Smart Attendance is based on STM32F407VG/STM32F4DISCOVERY (main operation), RC522 RFID cards reader (reading cards' ID), 
