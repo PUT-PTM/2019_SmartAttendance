@@ -14,6 +14,7 @@ using namespace std;
 // uncategorized methods section
 bool WiFi::init(UART_HandleTypeDef &_uart, bool connect) {
     this->uart = UART(&_uart);
+    this->changeBaud(9600);
 
     HAL_Delay(100);
     if (!this->test()) { return false; }
@@ -27,11 +28,10 @@ bool WiFi::init(UART_HandleTypeDef &_uart, bool connect) {
         if (!this->checkNetworks()) { return false; }
         HAL_Delay(100);
 
-        if (this->join()) {
-            if (this->checkConnection()) {
-                this->checkIP();
-                this->transmitCommand("AT+CIPMUX=0");
-            }
+        while (!this->join()) {}
+        if (this->checkConnection()) {
+            this->checkIP();
+            this->transmitCommand("AT+CIPMUX=0");
         }
         USB_Serial::transmit("WiFi init end\r\n\r\n");
     }
@@ -104,6 +104,15 @@ void WiFi::parseFoundNetworks(const string &data) {
 
 
 // AT command section
+void WiFi::changeBaud(const uint32_t &baudrate) {
+    USB_Serial::transmit("WiFi change baud\r\n");
+    string result;
+    while (!this->transmitCommand("AT+UART_DEF=" + to_string(baudrate) + ",8,1,0,0", &result)) {
+        USB_Serial::transmit(result);
+        HAL_Delay(500);
+    }
+}
+
 bool WiFi::reset() {
     USB_Serial::transmit("WiFi restart\r\n");
     return this->transmitCommand("AT+RST");
@@ -199,6 +208,7 @@ bool WiFi::transmitCommand(const string &cmd, string *result) {
     while (true) {
         if (temp.find("busy") == string::npos) {
             if (!uart.transmit(cmd + "\r\n")) {
+                USB_Serial::transmit("UART tranmit error\r\n");
                 USB_Serial::transmit("WiFi command fail ------------------------------\r\n\r\n");
                 return false;
             }
@@ -221,6 +231,7 @@ bool WiFi::transmitCommand(const string &cmd, string *result) {
         return true;
     }
     else {
+        USB_Serial::transmit("Wrong ESP response\r\n");
         USB_Serial::transmit("WiFi command fail ------------------------------\r\n\r\n");
         return false;
     }
@@ -244,22 +255,46 @@ bool WiFi::sendHttpRequest(const string &req, const string &url, string &respons
 
 bool WiFi::send(const string &data, string &response) {
     USB_Serial::transmit("WiFi send\r\n");
+    USB_Serial::transmit(data + "\r\n");
     if (!this->transmitCommand("AT+CIPMODE=1")) { return false; }
     if (!this->uart.transmit("AT+CIPSEND\r\n")) { return false; }
-    HAL_Delay(20);
-    if (!this->uart.transmit(data + "\r\n")) { return false; }
-    this->uart.receiveAll(response);
     HAL_Delay(50);
+
+    if (!this->uart.transmit(data + "\r\n")) { return false; }
+
+    response = "";
+    while (response.find("OK") == string::npos) {
+        string temp;
+        this->uart.receiveAll(temp);
+        response += temp;
+        USB_Serial::transmit(response);
+    }
+
     if (!this->uart.transmit("+++")) { return false; }
+
     HAL_Delay(50);
     if (!this->transmitCommand("AT+CIPMODE=0")) { return false; }
 
+    if (response.length() < 2) {
+        return false;
+    }
+
+    if (response.find("ERROR") != string::npos) {
+        return false;
+    }
+
+    if (response.empty()) {
+        USB_Serial::transmit("Empty response\r\n");
+    }
+    else {
+        USB_Serial::transmit(response + "\r\n");
+    }
     uint32_t respEnd = response.length() - 1;
-    if (response[respEnd] == 'K' && response[respEnd - 1] == 'O' && response[respEnd - 2] == ' ') {
+    if (response[respEnd - 1] == 'O' && response[respEnd] == 'K') {
         response.resize(respEnd - 2);
         response.shrink_to_fit();
     }
 
-    return false;
+    return true;
 }
 // end transmission section

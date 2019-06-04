@@ -55,6 +55,8 @@ public:
     // AT command section
     bool restore();
 
+    void changeBaud(const uint32_t &baudrate);
+
     bool reset();
 
     bool disableEcho();

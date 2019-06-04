@@ -9,7 +9,7 @@
 #include <string>
 #include <UART.hpp>
 
-#define TIMEOUT 200
+#define TIMEOUT 600
 
 using namespace std;
 
@@ -77,7 +77,7 @@ bool UART::receive(char *rData, const uint16_t &size) const {
 bool UART::receive(string &rData, const uint16_t &size) const {
     if (handle != nullptr) {
         uint8_t rData_[size];
-        const auto result = HAL_UART_Receive(handle, rData_, size, 1000);
+        const auto result = HAL_UART_Receive(handle, rData_, size, TIMEOUT);
         if (result != HAL_OK) { return false; }
         else {
             rData = string((char *) rData_);

@@ -26,14 +26,30 @@ void clearArray(char *cString, const uint16_t &size) {
  * Adds entry to Presence table in database
  */
 void SmartAttendance::addPresenceEntry(const uint32_t &SID) {
-    string respData;
-    const string dataToSend =
-            "{\"SID\":" + to_string(SID) + ",\"CID\":" + to_string(CID) + R"(,"Room":")" + room + "\"}";
+    if (SID != 0) {
+        string respData;
+        HTTP::Response response;
 
-    wifi.sendHttpRequest("POST", "/tables/Presence/", dataToSend, respData);
+        while (response.statusCode != 201) {
+            const string dataToSend =
+                    "{\"SID\":" + to_string(SID) +
+                    ",\"CID\":" + to_string(CID) +
+                    ",\"Room\":\"" + room + "\"}";
 
-    HTTP::Response resp = HTTP::parseResponse(respData);
-    USB_Serial::transmit(resp.toString() + "\r\n");
+            while(!wifi.sendHttpRequest("POST", "/tables/Presence/", dataToSend, respData));
+
+            response = HTTP::parseResponse(respData);
+            USB_Serial::transmit(response.toString() + "\r\n");
+
+            if (response.statusCode == 500 || response.statusCode == 404) {
+                USB_Serial::transmit("Badly programmed server!\r\n");
+                break;
+            }
+        }
+    }
+    else {
+        USB_Serial::transmit("Wrong SID!\r\n");
+    }
 }
 
 #pragma clang diagnostic push
@@ -51,6 +67,8 @@ bool SmartAttendance::configureWifi() {
     espReset.on();
     HAL_Delay(1000);
     diodeOrange.off();
+
+
 
     // Podmontowanie partycji
     diodeRed.on();

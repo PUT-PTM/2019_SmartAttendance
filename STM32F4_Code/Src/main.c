@@ -175,7 +175,7 @@ static void MX_SPI1_Init(void) {
     hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
     hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
     hspi1.Init.NSS = SPI_NSS_SOFT;
-    hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_16;
+    hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_64;
     hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
     hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
     hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
@@ -211,7 +211,7 @@ static void MX_SPI3_Init(void) {
     hspi3.Init.CLKPolarity = SPI_POLARITY_LOW;
     hspi3.Init.CLKPhase = SPI_PHASE_1EDGE;
     hspi3.Init.NSS = SPI_NSS_SOFT;
-    hspi3.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_4;
+    hspi3.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_16;
     hspi3.Init.FirstBit = SPI_FIRSTBIT_MSB;
     hspi3.Init.TIMode = SPI_TIMODE_DISABLE;
     hspi3.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
@@ -240,7 +240,7 @@ static void MX_USART3_UART_Init(void) {
 
     /* USER CODE END USART3_Init 1 */
     huart3.Instance = USART3;
-    huart3.Init.BaudRate = 115200;
+    huart3.Init.BaudRate = 9600;
     huart3.Init.WordLength = UART_WORDLENGTH_8B;
     huart3.Init.StopBits = UART_STOPBITS_1;
     huart3.Init.Parity = UART_PARITY_NONE;
@@ -275,6 +275,7 @@ static void MX_GPIO_Init(void) {
     HAL_GPIO_WritePin(RFID_CS_GPIO_Port, RFID_CS_Pin, GPIO_PIN_RESET);
 
     /*Configure GPIO pin Output Level */
+    HAL_GPIO_WritePin(RFID_RST_GPIO_Port, RFID_RST_Pin, GPIO_PIN_SET);
 
     /*Configure GPIO pin Output Level */
     HAL_GPIO_WritePin(GPIOD, ESP_EN_Pin | ESP_FLASH_Pin | ESP_RST_Pin, GPIO_PIN_SET);

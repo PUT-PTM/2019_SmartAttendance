@@ -40,7 +40,7 @@ def site():
 
 @app.route('/test')
 def test():
-    return 'Test tEst teSt tesT TEst tESt teST TESt tEST TEST'
+    return 'Test ' + 'OK'
 
 
 def student_exists(sid: int):
@@ -118,6 +118,7 @@ def tables_student():
         conn.commit()
         conn.close()
         print('Finished sql req!')
+
         return Response(status=201)
     elif request.method == 'DELETE':
         sid = request.args.get('sid')
@@ -226,12 +227,11 @@ def tables_presence():
         conn.commit()
         conn.close()
         print('Finished sql req!')
-        return Response(status=201)
+        return 'OK', 201
     # end elif POST
 
 
 if __name__ == '__main__':
-
     app.run(
         host='0.0.0.0',
         port=80,

@@ -50,19 +50,27 @@ void setup(void) {
 
         diodeBlue.off();
 
-        smartAttendance.wifi.connect(smartAttendance.serverType, smartAttendance.serverAddress,
-                                     smartAttendance.serverPort);
+        bool connected = false;
+        while (!connected) {
+            connected = smartAttendance.wifi.connect(smartAttendance.serverType, smartAttendance.serverAddress,
+                                                     smartAttendance.serverPort);
+        }
         string respData;
-        HAL_Delay(100);
-        smartAttendance.wifi.sendHttpRequest("GET", "/test", respData);
+        HTTP::Response response;
 
-        HTTP::Response resp = HTTP::parseResponse(respData);
-        USB_Serial::transmit(resp.toString() + "\r\n");
+        while(response.statusCode != 200) {
+            HAL_Delay(100);
+            smartAttendance.wifi.sendHttpRequest("GET", "/test", respData);
+
+            response = HTTP::parseResponse(respData);
+            USB_Serial::transmit(response.toString() + "\r\n");
+        }
 
     }
 }
 
 void loop(void) {
+    uint8_t EmptyId[5]{0, 0, 0, 0};
     uint8_t CardIdPrev[4]{0, 0, 0, 0};
     uint8_t CardId[5]{0, 0, 0, 0, 0};
 
@@ -73,12 +81,13 @@ void loop(void) {
 #pragma clang diagnostic ignored "-Wmissing-noreturn"
     while (true) {
         uint8_t result = check_for_card(CardId);
-        if (result == MI_OK) {
+        if (result == MI_OK && compare_ID(EmptyId, CardId) == MI_ERR) {
             diodeOrange.off();
             if (compare_ID(CardIdPrev, CardId) == MI_ERR) {
                 diodeBlue.on();
                 smartAttendance.addPresenceEntry(bytesToInt(CardId));
                 copy_id(CardId, CardIdPrev);
+                USB_Serial::transmit("Card ID post finished!");
             }
         }
         else {
