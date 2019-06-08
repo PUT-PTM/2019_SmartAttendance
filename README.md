@@ -30,6 +30,20 @@ HTTP server is Flask-based. It was programmed for Python 3.0 with [JetBrains PyC
 ## How to run
 To run our app you need to download latest release version (current is 1.0), have Python 3.0 installed with all dependencies (look into main.py script file) and use [STM32 ST-Link utility](https://www.st.com/en/development-tools/stsw-link004.html) to download software to the board (use .hex file fo this).
 
+Before being able to use your device, you have to prepare configuration file (CONFIG.INI) with structure as below.
+```
+{
+	"USB_SERIAL" : true,
+	"SERVER" : { "TYPE" : "TCP", "ADDRESS" : "192.168.0.1", "PORT" : 80 },
+	"NETWORKS" : [
+		{"SSID" : "first_network"	, "PASSWD" : "first_password"	},
+		{"SSID" : "secnd_network"	, "PASSWD" : "secnd_password"	}
+	],
+	"CID" : classroom_id,
+	"ROOM" : "room_name"
+}
+```
+
 ### Manual
 The main purpose was to build card reader that would be very easy to use. Students just have to put their ELS close to the reader and that is it. Users are also given with 4 led indicators to inform about its state:
 - green -> ready to use
