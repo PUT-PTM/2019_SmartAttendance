@@ -9,7 +9,7 @@
 #include <string>
 #include <UART.hpp>
 
-#define TIMEOUT 600
+#define TIMEOUT 200
 
 using namespace std;
 

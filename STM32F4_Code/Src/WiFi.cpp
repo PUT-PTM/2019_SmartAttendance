@@ -217,7 +217,8 @@ bool WiFi::transmitCommand(const string &cmd, string *result) {
         if (temp.find("ready") != string::npos || temp.find("OK") != string::npos) {
             break;
         }
-        if (temp.find("ERROR") != string::npos || temp.find("FAIL") != string::npos) {
+        if (temp.find("ERROR") != string::npos || temp.find("FAIL") != string::npos ||
+            temp.find("CLOSED") != string::npos) {
             break;
         }
     }
@@ -263,11 +264,14 @@ bool WiFi::send(const string &data, string &response) {
     if (!this->uart.transmit(data + "\r\n")) { return false; }
 
     response = "";
-    while (response.find("OK") == string::npos) {
+    while (true) {
         string temp;
         this->uart.receiveAll(temp);
         response += temp;
         USB_Serial::transmit(response);
+        if (response.find("SA_OK") != string::npos) {
+            break;
+        }
     }
 
     if (!this->uart.transmit("+++")) { return false; }

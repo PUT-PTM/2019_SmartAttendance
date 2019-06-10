@@ -3,7 +3,6 @@ import json
 from pathlib import Path
 
 import pymssql
-from flask import Response
 
 config_json: dict = json.loads(Path('config.json').read_text())
 

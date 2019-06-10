@@ -26,7 +26,7 @@ def site():
 
 @app.route('/test')
 def test():
-    return 'Test ' + 'OK'
+    return 'Test ' + 'SA_OK'
 
 
 @app.route('/tables/StudentInfo/', methods=['GET', 'HEAD', 'POST', 'DELETE'])
@@ -83,13 +83,22 @@ def tables_presence():
             return Response(status=404)
 
         database.presence_insert(payload)
-        return 'OK', 201
+        return 'SA_OK', 201
 
 
-if __name__ == '__main__':
+def main():
+    try:
+        database.connect()
+    except Exception:
+        return
+
     app.run(
         host='0.0.0.0',
         port=80,
         threaded=True,
         debug=False
     )
+
+
+if __name__ == '__main__':
+    main()
