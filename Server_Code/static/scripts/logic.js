@@ -29,7 +29,7 @@ function db_get_student_info() {
 
 function db_get_presence() {
     jQuery.get({
-        url: 'http://localhost:80/tables/'
+        url: 'http://localhost:80/tables/Presence/'
     }, function (data) {
         let dataParse = JSON.parse(data);
         if ($('#Table_Presence').length) {

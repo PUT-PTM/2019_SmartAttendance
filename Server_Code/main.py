@@ -16,7 +16,7 @@ config_json = json.loads(Path('config.json').read_text())
 
 @app.route('/')
 def empty():
-    return 'OK'
+    return 'OK', 200
 
 
 @app.route('/SmartAttendance')
@@ -33,35 +33,35 @@ def test():
 def tables_student():
     if request.method == 'GET':
         payload = database.student_info_get()
-        resp = Response(status=200)
+        resp = '', 200
         resp.data = json.dumps(payload)
         return resp
     elif request.method == 'HEAD':
         sid = request.args.get('sid')
         if sid is None:
-            return Response(status=400)
+            return '', 400
         elif database.student_exists(sid):
-            return Response(status=200)
+            return '', 200
         else:
-            return Response(status=404)
+            return '', 404
     elif request.method == 'POST':
         # Parse json payload
         payload = json.loads(request.data)
         print(request.data)
         # Can't add students with existing index
         if database.student_exists(payload['SID']):
-            return Response(status=409)
+            return '', 409
 
         database.student_info_insert(payload)
 
-        return Response(status=201)
+        return '', 201
     elif request.method == 'DELETE':
         sid = request.args.get('sid')
         if sid is not None:
             database.student_info_delete(sid)
-            return Response(status=200)
+            return '', 200
         else:
-            return Response(status=400)
+            return '', 400
 
 
 @app.route('/tables/Presence/', methods=['GET', 'POST'])
@@ -71,7 +71,7 @@ def tables_presence():
     if request.method == 'GET':
         payload: dict = database.presence_get()
 
-        resp = Response(status=200)
+        resp = '', 200
         resp.data = json.dumps(payload)
         return resp
     elif request.method == 'POST':
@@ -80,7 +80,7 @@ def tables_presence():
 
         # Index must exist
         if not database.student_exists(payload['SID']):
-            return Response(status=404)
+            return '', 404
 
         database.presence_insert(payload)
         return 'SA_OK', 201

@@ -97,8 +97,8 @@ def presence_get() -> dict:
             # Creating json table with data
             json.loads(
                 '{"SID":' + str(row[0]) + ',' +
-                '"Date": "' + row[1] + '",' +
-                '"CID": "' + row[2] + '"' +
+                '"Date": "' + row[1].strftime('%Y-%m-%d %H:%M:%S') + '",' +
+                '"CID": "' + str(row[2]) + '",' +
                 '"Room": "' + row[3] + '"}'
             )
         )
